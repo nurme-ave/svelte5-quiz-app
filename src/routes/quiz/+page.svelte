@@ -61,6 +61,11 @@
 			);
 		}
 	});
+
+	function formatCategoryName(category) {
+		if (!category) return 'Quiz';
+		return category.charAt(0).toUpperCase() + category.slice(1);
+	}
 </script>
 
 <div class="text-white text-center md:w-[32rem] fade-in delay-1">

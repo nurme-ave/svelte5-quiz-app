@@ -1,6 +1,6 @@
 <script>
 	let {
-		onClick = () => {},
+		onclick = () => {}, // Changed from onClick to onclick to match HTML attribute
 		disabled = false,
 		selected = false,
 		variant = 'default',
@@ -29,6 +29,6 @@
 	);
 </script>
 
-<button onclick={onClick} {disabled} class={classList}>
+<button {onclick} {disabled} class={classList}>
 	{@render children?.()}
 </button>

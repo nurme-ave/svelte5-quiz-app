@@ -30,7 +30,7 @@
 		{/if}
 	</p>
 	<Button
-		onClick={restartQuiz}
+		onclick={restartQuiz}
 		variant="primary"
 		customClass="w-36 mt-3 text-lg font-semibold mx-auto"
 	>
