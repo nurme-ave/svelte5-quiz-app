@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	font-family: 'Poppins', sans-serif;
+}
+
+.background {
+	position: relative;
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+	min-height: 100vh;
+}
+
+.background::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.65); /* This is equivalent to bg-black bg-opacity-50 */
+	z-index: 1;
+}
+
+.background > * {
+	position: relative;
+	z-index: 2;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fade-in {
+	opacity: 0;
+	animation: fadeIn 2s ease-out forwards;
+	will-change: opacity;
+	/* By specifying the 'will-change: opacity;' we're telling the browser, "Hey, the opacity of this element is likely to change soon, so please optimize for that." */
+}
+
+.delay-1 {
+	animation-delay: 0.5s;
+}
+
+.delay-2 {
+	animation-delay: 0.75s;
+}
+
+.delay-3 {
+	animation-delay: 1.25s;
+}
+
+.balanced-text {
+	text-wrap: balance;
+}
