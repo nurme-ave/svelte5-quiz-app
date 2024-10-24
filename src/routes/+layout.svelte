@@ -2,7 +2,6 @@
 	import '../app.css';
 	import { page } from '$app/stores';
 	import { quizCategory, getQuizBackgroundImage } from '$lib/stores/quizCategoryStore';
-	/** @type {{children?: import('svelte').Snippet}} */
 	let { children } = $props();
 
 	const LANDING_BG = '/images/bkg_main.jpg';

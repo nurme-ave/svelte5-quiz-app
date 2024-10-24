@@ -63,7 +63,7 @@
 		<div class="mb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
 			{#each categories as category}
 				<Button
-					onClick={() => selectCategory(category)}
+					onclick={() => selectCategory(category)}
 					selected={$selectedCategory === category.toLowerCase()}
 				>
 					{category}
@@ -75,7 +75,7 @@
 		<div class="mb-4">
 			{#each difficulties as difficulty}
 				<Button
-					onClick={() => selectDifficulty(difficulty)}
+					onclick={() => selectDifficulty(difficulty)}
 					selected={$selectedDifficulty === difficulty.toLowerCase()}
 				>
 					{difficulty}
@@ -87,7 +87,7 @@
 		<div class="mb-4">
 			{#each questionCounts as count}
 				<Button
-					onClick={() => selectQuestionCount(count)}
+					onclick={() => selectQuestionCount(count)}
 					selected={$selectedQuestionCount === count}
 				>
 					{count}
@@ -96,7 +96,7 @@
 		</div>
 
 		<Button
-			onClick={startQuiz}
+			onclick={startQuiz}
 			disabled={!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount}
 			variant="primary"
 			customClass="w-36 mt-3 text-lg font-semibold mx-auto"
