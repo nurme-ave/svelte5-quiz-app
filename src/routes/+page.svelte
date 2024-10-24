@@ -13,7 +13,7 @@
 
 	const categories = ['Film', 'Music', 'Sports', 'History', 'Vehicles', 'Geography'];
 	const difficulties = ['Easy', 'Medium', 'Hard'];
-	const questionCounts = [5, 10, 15];
+	const questionCounts = [2, 10, 15];
 
 	function selectCategory(category) {
 		$selectedCategory = category.toLowerCase();

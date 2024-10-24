@@ -70,7 +70,7 @@
 
 <div class="text-white text-center md:w-[32rem] fade-in delay-1">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">
-		{$quizCategory.charAt(0).toUpperCase() + $quizCategory.slice(1)} Quiz
+		{formatCategoryName($quizCategory)} Quiz
 	</h1>
 
 	{#if $loading}
