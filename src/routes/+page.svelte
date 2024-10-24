@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 	import { setQuizCategory } from '$lib/stores/quizCategoryStore';
 	import { categoryMapping } from '$lib/utils/categoryMapping';
-	import Icon from '@iconify/svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { onMount } from 'svelte';
 	import { resetQuiz } from '$lib/utils/quizUtils';
@@ -46,24 +45,19 @@
 </script>
 
 <div class="flex flex-col mx-auto text-center text-white gap-1 opacity-95">
-	<!-- <h1 class="text-4xl md:text-5xl font-semibold pb-3 uppercase fade-in delay-1 balanced-text"> -->
 	<h1 class="text-4xl md:text-5xl font-semibold pb-3 uppercase balanced-text">
 		Welcome to the <span class="text-yellow-300">Quiz&nbsp;</span>App
 	</h1>
-	<!-- <p class="md:text-xl fade-in delay-2 balanced-text"> -->
 	<p class="md:text-xl balanced-text">Make your selections below and start the&nbsp;quiz.</p>
-	<!-- <div class="md:text-xl flex gap-2 items-center justify-center fade-in delay-2"> -->
 	<div class="md:text-xl flex gap-2 items-center justify-center">
 		<p>Good luck!</p>
-		<Icon
-			icon="heroicons-solid:star"
-			class="text-yellow-400 transition-transform hover:scale-110 text-2xl"
-		/>
+		<i
+			class="fas fa-star text-xl text-yellow-400 transition-transform hover:scale-110 animate-[bounce_2s_ease-in-out_infinite]"
+		></i>
 	</div>
 
 	<hr class="mt-7 border border-yellow-400" />
 
-	<!-- <div class="flex flex-col gap-2 mt-7 fade-in delay-3"> -->
 	<div class="flex flex-col gap-2 mt-7">
 		<h2 class="font-semibold uppercase">Select a category:</h2>
 		<div class="mb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">

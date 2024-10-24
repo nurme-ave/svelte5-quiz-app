@@ -13,7 +13,7 @@
 		goto('/');
 	}
 
-	$: totalQuestions = $questions.length;
+	let totalQuestions = $derived($questions.length);
 </script>
 
 <div class="text-white text-center md:w-[32rem] fade-in delay-1">

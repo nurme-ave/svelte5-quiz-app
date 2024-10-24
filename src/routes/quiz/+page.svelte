@@ -14,15 +14,9 @@
 	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
 	import { goto } from '$app/navigation';
 
-	let loadError = false;
-	let quizEnded = false;
-	let shuffledAnswers = [];
-
-	$: if (currentQuestion) {
-		shuffledAnswers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer].sort(
-			() => Math.random() - 0.5
-		);
-	}
+	let loadError = $state(false);
+	let quizEnded = $state(false);
+	let shuffledAnswers = $state([]);
 
 	onMount(async () => {
 		const categoryId = $page.url.searchParams.get('category');
@@ -58,7 +52,15 @@
 		goto('/');
 	}
 
-	$: currentQuestion = $questions[$currentQuestionIndex];
+	let currentQuestion = $derived($questions[$currentQuestionIndex]);
+
+	$effect(() => {
+		if (currentQuestion) {
+			shuffledAnswers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer].sort(
+				() => Math.random() - 0.5
+			);
+		}
+	});
 </script>
 
 <div class="text-white text-center md:w-[32rem] fade-in delay-1">
@@ -90,7 +92,7 @@
 									: 'bg-white text-black'
 						}`}
 						disabled={$selectedAnswer !== null}
-						on:click={() => handleQuizAnswer(answer)}
+						onclick={() => handleQuizAnswer(answer)}
 					>
 						{@html answer}
 					</button>

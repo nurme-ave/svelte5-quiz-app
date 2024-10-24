@@ -6,7 +6,7 @@ export const setQuizCategory = (category) => {
 	quizCategory.set(category);
 };
 
-export const getQuizBackgroundImage = (category) => {
+export function getQuizBackgroundImage(category) {
 	switch (category) {
 		case 'film':
 			return '/images/bkg_film.jpg';
@@ -23,4 +23,4 @@ export const getQuizBackgroundImage = (category) => {
 		default:
 			return '/images/bkg_main.jpg';
 	}
-};
+}
