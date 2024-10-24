@@ -14,9 +14,18 @@
 	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
 	import { goto } from '$app/navigation';
 
-	let loadError = $state(false);
-	let quizEnded = $state(false);
-	let shuffledAnswers = $state([]);
+	let quizState = $state({
+		// UI state
+		loadError: false,
+		quizEnded: false,
+		shuffledAnswers: [],
+		currentQuestion: null // Just store the current question here
+	});
+
+	// Update current question when questions or index changes
+	$effect(() => {
+		quizState.currentQuestion = $questions[$currentQuestionIndex] || null;
+	});
 
 	onMount(async () => {
 		const categoryId = $page.url.searchParams.get('category');
@@ -27,18 +36,18 @@
 			await fetchQuestions(categoryId, difficulty, questionCount);
 		} catch (e) {
 			console.error('Failed to load questions. Please try again.');
-			loadError = true;
+			quizState.loadError = true;
 		}
 	});
 
 	function handleQuizAnswer(answer) {
 		$selectedAnswer = answer;
-		$isAnswerCorrect = answer === currentQuestion.correct_answer;
+		$isAnswerCorrect = answer === quizState.currentQuestion.correct_answer;
 		handleAnswer(answer);
 
 		setTimeout(() => {
 			if ($currentQuestionIndex >= $questions.length - 1) {
-				quizEnded = true;
+				quizState.quizEnded = true;
 			} else {
 				$selectedAnswer = null;
 				$isAnswerCorrect = null;
@@ -52,19 +61,14 @@
 		goto('/');
 	}
 
-	let currentQuestion = $derived($questions[$currentQuestionIndex]);
-
 	function shuffleAnswers(array) {
 		let currentIndex = array.length;
 		let randomIndex;
 
-		// While there remain elements to shuffle
 		while (currentIndex > 0) {
-			// Pick a remaining element
 			randomIndex = Math.floor(Math.random() * currentIndex);
 			currentIndex--;
 
-			// And swap it with the current element
 			[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
 		}
 
@@ -72,9 +76,12 @@
 	}
 
 	$effect(() => {
-		if (currentQuestion) {
-			const answers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer];
-			shuffledAnswers = shuffleAnswers(answers);
+		if (quizState.currentQuestion) {
+			const answers = [
+				...quizState.currentQuestion.incorrect_answers,
+				quizState.currentQuestion.correct_answer
+			];
+			quizState.shuffledAnswers = shuffleAnswers(answers);
 		}
 	});
 
@@ -91,17 +98,17 @@
 
 	{#if $loading}
 		<p>Loading questions...</p>
-	{:else if loadError}
+	{:else if quizState.loadError}
 		<p class="text-red-500">Failed to load questions. Please try again.</p>
-	{:else if quizEnded}
+	{:else if quizState.quizEnded}
 		<QuizEndScreen on:restart={restartQuiz} />
-	{:else if currentQuestion && $questions.length > 0}
+	{:else if quizState.currentQuestion && $questions.length > 0}
 		<div>
 			<h2 class="text-xl mb-2">Question {$currentQuestionIndex + 1} of {$questions.length}</h2>
-			<p class="mb-4 h-20 md:h-12">{@html currentQuestion.question}</p>
+			<p class="mb-4 h-20 md:h-12">{@html quizState.currentQuestion.question}</p>
 
 			<div class="space-y-2 fade-in delay-2">
-				{#each shuffledAnswers as answer (answer)}
+				{#each quizState.shuffledAnswers as answer (answer)}
 					<button
 						class={`w-full p-2 rounded-md transition-colors duration-200 ${
 							$selectedAnswer === null
@@ -124,7 +131,7 @@
 		<p>No questions available. Please try again.</p>
 	{/if}
 
-	{#if !quizEnded}
+	{#if !quizState.quizEnded}
 		<div class="mt-8 fade-in delay-3">
 			<p>Score: {$score} / {$questions.length}</p>
 		</div>
