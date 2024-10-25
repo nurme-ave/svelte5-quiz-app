@@ -6,6 +6,7 @@
 	import { fetchQuestions, handleAnswer, resetQuiz, shuffleArray } from '$lib/utils/quizUtils';
 	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
 
+	import Button from '$lib/components/Button.svelte';
 	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
 
 	import {
@@ -128,9 +129,16 @@
 		<p>No questions available. Please try again.</p>
 	{/if}
 
-	{#if !quizState.quizEnded}
-		<div class="mt-8 fade-in-from-top delay-3">
+	<div class="mt-8 fade-in-from-top delay-3 flex flex-col gap-4">
+		{#if !quizState.quizEnded}
 			<p>Score: {$score} / {$questions.length}</p>
-		</div>
-	{/if}
+			<Button
+				onclick={restartQuiz}
+				variant="primary"
+				customClass="w-32 bg-red-500 hover:bg-red-600 border-red-500 mx-auto mt-4"
+			>
+				Start Over
+			</Button>
+		{/if}
+	</div>
 </div>
