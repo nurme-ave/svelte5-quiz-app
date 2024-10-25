@@ -129,8 +129,8 @@
 	{/if}
 
 	{#if !quizState.quizEnded}
-		<div class="mt-8">
-			<p class="fade-in-from-top delay-3">Score: {$score} / {$questions.length}</p>
+		<div class="mt-8 fade-in-from-top delay-3">
+			<p>Score: {$score} / {$questions.length}</p>
 		</div>
 	{/if}
 </div>
