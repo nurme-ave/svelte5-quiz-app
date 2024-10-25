@@ -1,12 +1,13 @@
 <script>
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
-	import { fetchQuestions, handleAnswer, resetQuiz, shuffleArray } from '$lib/utils/quizUtils';
 	import Button from '$lib/components/Button.svelte';
 	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
+
 	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
+	import { fetchQuestions, handleAnswer, resetQuiz, shuffleArray } from '$lib/utils/quizUtils';
 
 	import {
 		quizCategory,
@@ -240,7 +241,7 @@
 				variant="primary"
 				customClass="w-32 bg-red-500 hover:bg-red-600 border-red-500 mx-auto mt-4"
 			>
-				Start Over
+				Restart
 			</Button>
 		{/if}
 	</div>

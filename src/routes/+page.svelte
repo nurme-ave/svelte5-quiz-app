@@ -5,6 +5,13 @@
 	import Button from '$lib/components/Button.svelte';
 
 	import {
+		QUIZ_CATEGORIES,
+		QUIZ_DIFFICULTIES,
+		QUIZ_QUESTION_COUNTS,
+		STAGGER_DELAY_CLASSES
+	} from '$lib/utils/quizConstants';
+
+	import {
 		resetQuiz,
 		selectCategory,
 		selectDifficulty,
@@ -18,13 +25,6 @@
 		selectedDifficulty,
 		selectedQuestionCount
 	} from '$lib/stores/quizStore';
-
-	import {
-		QUIZ_CATEGORIES,
-		QUIZ_DIFFICULTIES,
-		QUIZ_QUESTION_COUNTS,
-		STAGGER_DELAY_CLASSES
-	} from '$lib/utils/quizConstants';
 
 	function handleStartQuiz() {
 		try {

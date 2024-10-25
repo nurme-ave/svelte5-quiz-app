@@ -1,9 +1,11 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	import { questions, score } from '$lib/stores/quizStore';
-	import { resetQuiz } from '$lib/utils/quizUtils';
-	import Button from './Button.svelte';
 	import { goto } from '$app/navigation';
+
+	import { resetQuiz } from '$lib/utils/quizUtils';
+	import { questions, score } from '$lib/stores/quizStore';
+
+	import Button from './Button.svelte';
 
 	const dispatch = createEventDispatcher();
 
