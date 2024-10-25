@@ -96,7 +96,7 @@
 	}
 </script>
 
-<div class="text-white text-center md:w-[32rem] fade-in-from-top delay-1">
+<div class="mx-auto text-white md:w-[32rem] fade-in-from-top delay-1">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">
 		{formatCategoryName($quizCategory)} Quiz
 	</h1>

@@ -44,7 +44,7 @@
 	});
 </script>
 
-<div class="flex flex-col mx-auto text-center text-white gap-1 opacity-95">
+<div class="text-white opacity-95">
 	<div class="fade-in-from-top delay-1">
 		<h1 class="text-4xl md:text-5xl font-semibold pb-3 uppercase balanced-text">
 			Welcome to the <span class="text-yellow-300">Quiz&nbsp;</span>App
