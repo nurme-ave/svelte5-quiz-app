@@ -1,6 +1,5 @@
 <script>
 	import { goto } from '$app/navigation';
-	import { setQuizCategory } from '$lib/stores/quizCategoryStore';
 	import Button from '$lib/components/Button.svelte';
 	import { onMount } from 'svelte';
 
@@ -13,6 +12,7 @@
 	} from '$lib/utils/quizUtils';
 
 	import {
+		setQuizCategory,
 		selectedCategory,
 		selectedDifficulty,
 		selectedQuestionCount
