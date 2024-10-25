@@ -20,9 +20,9 @@
 	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">Congratulations!</h1>
 	<p>You've completed the quiz!</p>
 	<p>Your score: {$score} / {totalQuestions}</p>
-	<p>
+	<p class="balanced-text">
 		{#if $score === totalQuestions}
-			Perfect score! You're a quiz master!
+			Perfect score! You're a quiz&nbsp;master!
 		{:else if $score > totalQuestions / 2}
 			Great job! You did well!
 		{:else}
