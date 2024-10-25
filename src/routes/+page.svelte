@@ -118,7 +118,7 @@
 			onclick={startQuiz}
 			disabled={!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount}
 			variant="primary"
-			customClass="w-36 mt-3 text-lg font-semibold mx-auto fade-in delay-3"
+			customClass="w-36 text-lg font-semibold mx-auto fade-in delay-3 mt-7"
 		>
 			Start Quiz
 		</Button>
