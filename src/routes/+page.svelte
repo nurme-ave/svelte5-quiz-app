@@ -45,7 +45,7 @@
 </script>
 
 <div class="flex flex-col mx-auto text-center text-white gap-1 opacity-95">
-	<div class="fade-in delay-1">
+	<div class="fade-in-from-top delay-1">
 		<h1 class="text-4xl md:text-5xl font-semibold pb-3 uppercase balanced-text">
 			Welcome to the <span class="text-yellow-300">Quiz&nbsp;</span>App
 		</h1>
@@ -58,10 +58,10 @@
 		</div>
 	</div>
 
-	<hr class="mt-7 border border-yellow-400 fade-in delay-2" />
+	<hr class="mt-7 border border-yellow-400 fade-in-from-top delay-2" />
 
 	<div class="flex flex-col gap-2 mt-7">
-		<h2 class="font-semibold uppercase fade-in delay-2">Select a category:</h2>
+		<h2 class="font-semibold uppercase fade-in-from-top delay-2">Select a category:</h2>
 		<div class="mb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
 			{#each QUIZ_CATEGORIES as category, i}
 				<div class="stagger-fade-in {STAGGER_DELAY_CLASSES[i]}">
@@ -76,7 +76,7 @@
 			{/each}
 		</div>
 
-		<div class="fade-in delay-2">
+		<div class="fade-in-from-top delay-2">
 			<div class="mb-6">
 				<h2 class="font-semibold uppercase mb-2">Select difficulty:</h2>
 				<div class="space-x-2">
@@ -110,7 +110,7 @@
 			onclick={handleStartQuiz}
 			disabled={!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount}
 			variant="primary"
-			customClass="w-36 text-lg font-semibold mx-auto fade-in delay-3 mt-7"
+			customClass="w-36 text-lg font-semibold mx-auto fade-in-from-top delay-3 mt-7"
 		>
 			Start Quiz
 		</Button>

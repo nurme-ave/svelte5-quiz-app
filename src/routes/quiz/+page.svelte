@@ -96,7 +96,7 @@
 	}
 </script>
 
-<div class="text-white text-center md:w-[32rem] fade-in delay-1">
+<div class="text-white text-center md:w-[32rem] fade-in-from-top delay-1">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">
 		{formatCategoryName($quizCategory)} Quiz
 	</h1>
@@ -108,11 +108,11 @@
 	{:else if quizState.quizEnded}
 		<QuizEndScreen on:restart={restartQuiz} />
 	{:else if quizState.currentQuestion && $questions.length > 0}
-		<div>
-			<h2 class="text-xl mb-2">Question {$currentQuestionIndex + 1} of {$questions.length}</h2>
-			<p class="mb-4">{@html quizState.currentQuestion.question}</p>
+		<div class="fade-in-from-top delay-3">
+			<h2 class="text-lg mb-2">Question {$currentQuestionIndex + 1} of {$questions.length}</h2>
+			<p class="mb-8">{@html quizState.currentQuestion.question}</p>
 
-			<div class="space-y-2 fade-in delay-2">
+			<div class="space-y-2 delay-3">
 				{#each quizState.shuffledAnswers as answer (answer)}
 					<button
 						class={getAnswerButtonClasses(answer)}
@@ -129,8 +129,8 @@
 	{/if}
 
 	{#if !quizState.quizEnded}
-		<div class="mt-8 fade-in delay-3">
-			<p>Score: {$score} / {$questions.length}</p>
+		<div class="mt-8">
+			<p class="fade-in-from-top delay-3">Score: {$score} / {$questions.length}</p>
 		</div>
 	{/if}
 </div>

@@ -27,7 +27,7 @@ body {
 	z-index: 2;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInFromTop {
 	from {
 		opacity: 0;
 		transform: translateY(-25px);
@@ -38,9 +38,9 @@ body {
 	}
 }
 
-.fade-in {
+.fade-in-from-top {
 	opacity: 0;
-	animation: fadeIn 2.5s ease-out forwards;
+	animation: fadeInFromTop 2.5s ease-out forwards;
 	will-change: opacity;
 	/* By specifying the 'will-change: opacity;' we're telling the browser, "Hey, the opacity of this element is likely to change soon, so please optimize for that." */
 }
