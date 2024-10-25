@@ -1,17 +1,21 @@
 <script>
 	let {
-		onclick = () => {}, // Changed from onClick to onclick to match HTML attribute
+		onclick = () => {},
 		disabled = false,
 		selected = false,
 		variant = 'default',
 		customClass = '',
+		fullWidth = false,
 		children
 	} = $props();
 
 	let classList = $derived(
 		[
-			// Base styles
-			'px-5 py-2 m-1 rounded-md transition-colors duration-200 border',
+			// Conditional base styles
+			'px-5 py-2 rounded-md transition-colors duration-200 border',
+
+			// Width control
+			fullWidth ? 'w-full' : 'inline-block',
 
 			// Variant and selected state styles
 			variant === 'primary'
