@@ -4,7 +4,6 @@
 	import { goto } from '$app/navigation';
 
 	import { fetchQuestions, handleAnswer, resetQuiz, shuffleArray } from '$lib/utils/quizUtils';
-	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
 
 	import Button from '$lib/components/Button.svelte';
 	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
@@ -19,11 +18,41 @@
 		isAnswerCorrect
 	} from '$lib/stores/quizStore';
 
+	const QUESTION_TIME_LIMIT = 10; // 10 seconds per question
+
 	let quizState = $state({
 		loadError: false,
 		quizEnded: false,
 		shuffledAnswers: [],
-		currentQuestion: null
+		currentQuestion: null,
+		totalTime: 0,
+		questionTime: QUESTION_TIME_LIMIT
+	});
+
+	// Main timer effect
+	$effect(() => {
+		if ($loading || quizState.quizEnded || quizState.loadError) {
+			return;
+		}
+
+		const timer = setInterval(() => {
+			quizState.totalTime += 1;
+			quizState.questionTime -= 1;
+
+			// Time's up for current question
+			if (quizState.questionTime === 0) {
+				handleTimeUp();
+			}
+		}, 1000);
+
+		return () => clearInterval(timer);
+	});
+
+	// Reset question timer when question changes
+	$effect(() => {
+		if ($currentQuestionIndex !== null) {
+			quizState.questionTime = QUESTION_TIME_LIMIT;
+		}
 	});
 
 	onMount(async () => {
@@ -54,20 +83,35 @@
 		}
 	});
 
+	function handleTimeUp() {
+		// If no answer selected, count as incorrect
+		if ($selectedAnswer === null) {
+			handleAnswer(null);
+		}
+
+		// Move to next question or end quiz
+		if ($currentQuestionIndex >= $questions.length - 1) {
+			quizState.quizEnded = true;
+		} else {
+			$selectedAnswer = null;
+			$isAnswerCorrect = null;
+			currentQuestionIndex.update((n) => n + 1);
+		}
+	}
+
 	function handleQuizAnswer(answer) {
 		$selectedAnswer = answer;
 		$isAnswerCorrect = answer === quizState.currentQuestion.correct_answer;
 		handleAnswer(answer);
 
-		setTimeout(() => {
-			if ($currentQuestionIndex >= $questions.length - 1) {
-				quizState.quizEnded = true;
-			} else {
-				$selectedAnswer = null;
-				$isAnswerCorrect = null;
-				currentQuestionIndex.update((n) => n + 1);
-			}
-		}, ANSWER_DISPLAY_DURATION);
+		// Remove setTimeout and handle progression immediately
+		if ($currentQuestionIndex >= $questions.length - 1) {
+			quizState.quizEnded = true;
+		} else {
+			$selectedAnswer = null;
+			$isAnswerCorrect = null;
+			currentQuestionIndex.update((n) => n + 1);
+		}
 	}
 
 	function restartQuiz() {
@@ -95,6 +139,23 @@
 		if (!category) return 'Quiz';
 		return category.charAt(0).toUpperCase() + category.slice(1);
 	}
+
+	function formatTime(seconds) {
+		const minutes = Math.floor(seconds / 60);
+		const remainingSeconds = seconds % 60;
+		return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+	}
+
+	function getProgressPercentage() {
+		return (quizState.questionTime / QUESTION_TIME_LIMIT) * 100;
+	}
+
+	function getProgressBarColor(timeLeft) {
+		const percentage = (timeLeft / QUESTION_TIME_LIMIT) * 100;
+		if (percentage <= 30) return 'bg-red-500';
+		if (percentage <= 60) return 'bg-yellow-500';
+		return 'bg-green-500';
+	}
 </script>
 
 <div class="mx-auto text-white md:w-[32rem] fade-in-from-top delay-1">
@@ -108,9 +169,25 @@
 		<p class="text-red-500">Failed to load questions. Please try again.</p>
 	{:else if quizState.quizEnded}
 		<QuizEndScreen on:restart={restartQuiz} />
+		<p class="text-center mt-4">Total Time: {formatTime(quizState.totalTime)}</p>
 	{:else if quizState.currentQuestion && $questions.length > 0}
+		<div class="flex justify-between items-center mb-4">
+			<h2 class="text-lg">Question {$currentQuestionIndex + 1} of {$questions.length}</h2>
+			<p class="text-sm">Total Time: {formatTime(quizState.totalTime)}</p>
+		</div>
+
+		<!-- Progress bar -->
+		<div class="w-full h-2 bg-gray-700 rounded-full mb-4 overflow-hidden">
+			<div
+				class="h-full {getProgressBarColor(quizState.questionTime)} origin-left"
+				style="width: {getProgressPercentage()}%; transition: width {quizState.questionTime ===
+				QUESTION_TIME_LIMIT
+					? '0s'
+					: '1s'} linear"
+			></div>
+		</div>
+
 		<div class="fade-in-from-top delay-3">
-			<h2 class="text-lg mb-2">Question {$currentQuestionIndex + 1} of {$questions.length}</h2>
 			<p class="mb-8">{@html quizState.currentQuestion.question}</p>
 
 			<div class="space-y-2 delay-3">
