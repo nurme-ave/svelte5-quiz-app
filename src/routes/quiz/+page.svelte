@@ -8,6 +8,8 @@
 	import Button from '$lib/components/Button.svelte';
 	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
 
+	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
+
 	import {
 		quizCategory,
 		questions,
@@ -104,14 +106,15 @@
 		$isAnswerCorrect = answer === quizState.currentQuestion.correct_answer;
 		handleAnswer(answer);
 
-		// Remove setTimeout and handle progression immediately
-		if ($currentQuestionIndex >= $questions.length - 1) {
-			quizState.quizEnded = true;
-		} else {
-			$selectedAnswer = null;
-			$isAnswerCorrect = null;
-			currentQuestionIndex.update((n) => n + 1);
-		}
+		setTimeout(() => {
+			if ($currentQuestionIndex >= $questions.length - 1) {
+				quizState.quizEnded = true;
+			} else {
+				$selectedAnswer = null;
+				$isAnswerCorrect = null;
+				currentQuestionIndex.update((n) => n + 1);
+			}
+		}, ANSWER_DISPLAY_DURATION);
 	}
 
 	function restartQuiz() {
