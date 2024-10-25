@@ -1,15 +1,23 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { setQuizCategory } from '$lib/stores/quizCategoryStore';
-	import { categoryMapping } from '$lib/utils/categoryMapping';
 	import Button from '$lib/components/Button.svelte';
 	import { onMount } from 'svelte';
-	import { resetQuiz } from '$lib/utils/quizUtils';
+
+	import {
+		resetQuiz,
+		selectCategory,
+		selectDifficulty,
+		selectQuestionCount,
+		startQuiz
+	} from '$lib/utils/quizUtils';
+
 	import {
 		selectedCategory,
 		selectedDifficulty,
 		selectedQuestionCount
 	} from '$lib/stores/quizStore';
+
 	import {
 		QUIZ_CATEGORIES,
 		QUIZ_DIFFICULTIES,
@@ -17,27 +25,17 @@
 		STAGGER_DELAY_CLASSES
 	} from '$lib/utils/quizConstants';
 
-	function selectCategory(category) {
-		$selectedCategory = category.toLowerCase();
-	}
-
-	function selectDifficulty(difficulty) {
-		$selectedDifficulty = difficulty.toLowerCase();
-	}
-
-	function selectQuestionCount(count) {
-		$selectedQuestionCount = count;
-	}
-
-	function startQuiz() {
-		if ($selectedCategory && $selectedDifficulty && $selectedQuestionCount) {
-			const categoryId = categoryMapping[$selectedCategory];
-			setQuizCategory($selectedCategory);
-			goto(
-				`/quiz?category=${categoryId}&difficulty=${$selectedDifficulty}&questions=${$selectedQuestionCount}`
+	function handleStartQuiz() {
+		try {
+			const path = startQuiz(
+				$selectedCategory,
+				$selectedDifficulty,
+				$selectedQuestionCount,
+				setQuizCategory
 			);
-		} else {
-			alert('Please select a category, difficulty level, and number of questions.');
+			goto(path);
+		} catch (error) {
+			alert(error.message);
 		}
 	}
 
@@ -68,7 +66,7 @@
 			{#each QUIZ_CATEGORIES as category, i}
 				<div class="stagger-fade-in {STAGGER_DELAY_CLASSES[i]}">
 					<Button
-						onclick={() => selectCategory(category)}
+						onclick={() => selectCategory(selectedCategory, category)}
 						selected={$selectedCategory === category.toLowerCase()}
 						fullWidth
 					>
@@ -84,7 +82,7 @@
 				<div class="space-x-2">
 					{#each QUIZ_DIFFICULTIES as difficulty}
 						<Button
-							onclick={() => selectDifficulty(difficulty)}
+							onclick={() => selectDifficulty(selectedDifficulty, difficulty)}
 							selected={$selectedDifficulty === difficulty.toLowerCase()}
 						>
 							{difficulty}
@@ -98,7 +96,7 @@
 				<div class="space-x-2">
 					{#each QUIZ_QUESTION_COUNTS as count}
 						<Button
-							onclick={() => selectQuestionCount(count)}
+							onclick={() => selectQuestionCount(selectedQuestionCount, count)}
 							selected={$selectedQuestionCount === count}
 						>
 							{count}
@@ -109,7 +107,7 @@
 		</div>
 
 		<Button
-			onclick={startQuiz}
+			onclick={handleStartQuiz}
 			disabled={!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount}
 			variant="primary"
 			customClass="w-36 text-lg font-semibold mx-auto fade-in delay-3 mt-7"

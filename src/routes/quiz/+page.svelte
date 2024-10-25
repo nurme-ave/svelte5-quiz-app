@@ -15,11 +15,10 @@
 	import { goto } from '$app/navigation';
 
 	let quizState = $state({
-		// UI state
 		loadError: false,
 		quizEnded: false,
 		shuffledAnswers: [],
-		currentQuestion: null // Just store the current question here
+		currentQuestion: null
 	});
 
 	// Update current question when questions or index changes
@@ -105,7 +104,7 @@
 	{:else if quizState.currentQuestion && $questions.length > 0}
 		<div>
 			<h2 class="text-xl mb-2">Question {$currentQuestionIndex + 1} of {$questions.length}</h2>
-			<p class="mb-4 h-20 md:h-12">{@html quizState.currentQuestion.question}</p>
+			<p class="mb-4">{@html quizState.currentQuestion.question}</p>
 
 			<div class="space-y-2 fade-in delay-2">
 				{#each quizState.shuffledAnswers as answer (answer)}
