@@ -10,18 +10,12 @@
 		selectedDifficulty,
 		selectedQuestionCount
 	} from '$lib/stores/quizStore';
-
-	const categories = ['Film', 'Music', 'Sports', 'History', 'Vehicles', 'Geography'];
-	const difficulties = ['Easy', 'Medium', 'Hard'];
-	const questionCounts = [2, 10, 15];
-	const staggerDelayClasses = [
-		'stagger-delay-0',
-		'stagger-delay-1',
-		'stagger-delay-2',
-		'stagger-delay-3',
-		'stagger-delay-4',
-		'stagger-delay-5'
-	];
+	import {
+		QUIZ_CATEGORIES,
+		QUIZ_DIFFICULTIES,
+		QUIZ_QUESTION_COUNTS,
+		STAGGER_DELAY_CLASSES
+	} from '$lib/utils/quizConstants';
 
 	function selectCategory(category) {
 		$selectedCategory = category.toLowerCase();
@@ -71,8 +65,8 @@
 	<div class="flex flex-col gap-2 mt-7">
 		<h2 class="font-semibold uppercase fade-in delay-2">Select a category:</h2>
 		<div class="mb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-			{#each categories as category, i}
-				<div class="stagger-fade-in {staggerDelayClasses[i]}">
+			{#each QUIZ_CATEGORIES as category, i}
+				<div class="stagger-fade-in {STAGGER_DELAY_CLASSES[i]}">
 					<Button
 						onclick={() => selectCategory(category)}
 						selected={$selectedCategory === category.toLowerCase()}
@@ -88,7 +82,7 @@
 			<div class="mb-6">
 				<h2 class="font-semibold uppercase mb-2">Select difficulty:</h2>
 				<div class="space-x-2">
-					{#each difficulties as difficulty}
+					{#each QUIZ_DIFFICULTIES as difficulty}
 						<Button
 							onclick={() => selectDifficulty(difficulty)}
 							selected={$selectedDifficulty === difficulty.toLowerCase()}
@@ -102,7 +96,7 @@
 			<div>
 				<h2 class="font-semibold uppercase mb-2">Select number of questions:</h2>
 				<div class="space-x-2">
-					{#each questionCounts as count}
+					{#each QUIZ_QUESTION_COUNTS as count}
 						<Button
 							onclick={() => selectQuestionCount(count)}
 							selected={$selectedQuestionCount === count}
