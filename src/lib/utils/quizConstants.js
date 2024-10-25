@@ -1,6 +1,8 @@
 export const QUIZ_CATEGORIES = ['Film', 'Music', 'Sports', 'History', 'Vehicles', 'Geography'];
 export const QUIZ_DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 export const QUIZ_QUESTION_COUNTS = [2, 10, 15];
+export const ANSWER_DISPLAY_DURATION = 2000; // Move to constants
+
 export const STAGGER_DELAY_CLASSES = [
 	'stagger-delay-0',
 	'stagger-delay-1',

@@ -100,3 +100,21 @@ export function startQuiz(
 		throw new Error('Please select a category, difficulty level, and number of questions.');
 	}
 }
+
+export function shuffleArray(array) {
+	const shuffled = [...array];
+	let currentIndex = shuffled.length;
+	let randomIndex;
+
+	while (currentIndex > 0) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex--;
+
+		[shuffled[currentIndex], shuffled[randomIndex]] = [
+			shuffled[randomIndex],
+			shuffled[currentIndex]
+		];
+	}
+
+	return shuffled;
+}

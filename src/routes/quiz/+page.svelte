@@ -1,6 +1,13 @@
 <script>
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+
+	import { fetchQuestions, handleAnswer, resetQuiz, shuffleArray } from '$lib/utils/quizUtils';
+	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
+
+	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
+
 	import {
 		quizCategory,
 		questions,
@@ -10,20 +17,12 @@
 		selectedAnswer,
 		isAnswerCorrect
 	} from '$lib/stores/quizStore';
-	import { fetchQuestions, handleAnswer, resetQuiz } from '$lib/utils/quizUtils';
-	import QuizEndScreen from '$lib/components/QuizEndScreen.svelte';
-	import { goto } from '$app/navigation';
 
 	let quizState = $state({
 		loadError: false,
 		quizEnded: false,
 		shuffledAnswers: [],
 		currentQuestion: null
-	});
-
-	// Update current question when questions or index changes
-	$effect(() => {
-		quizState.currentQuestion = $questions[$currentQuestionIndex] || null;
 	});
 
 	onMount(async () => {
@@ -36,6 +35,21 @@
 		} catch (e) {
 			console.error('Failed to load questions. Please try again.');
 			quizState.loadError = true;
+		}
+	});
+
+	// Update current question when questions or index changes
+	$effect(() => {
+		quizState.currentQuestion = $questions[$currentQuestionIndex] || null;
+	});
+
+	$effect(() => {
+		if (quizState.currentQuestion) {
+			const answers = [
+				...quizState.currentQuestion.incorrect_answers,
+				quizState.currentQuestion.correct_answer
+			];
+			quizState.shuffledAnswers = shuffleArray(answers);
 		}
 	});
 
@@ -52,7 +66,7 @@
 				$isAnswerCorrect = null;
 				currentQuestionIndex.update((n) => n + 1);
 			}
-		}, 2000);
+		}, ANSWER_DISPLAY_DURATION);
 	}
 
 	function restartQuiz() {
@@ -60,29 +74,21 @@
 		goto('/');
 	}
 
-	function shuffleAnswers(array) {
-		let currentIndex = array.length;
-		let randomIndex;
+	function getAnswerButtonClasses(answer) {
+		const baseClasses = 'w-full p-2 rounded-md transition-colors duration-200';
 
-		while (currentIndex > 0) {
-			randomIndex = Math.floor(Math.random() * currentIndex);
-			currentIndex--;
-
-			[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+		if ($selectedAnswer === null) {
+			return `${baseClasses} bg-white text-black hover:bg-blue-500 hover:text-white`;
 		}
 
-		return array;
+		if ($selectedAnswer === answer) {
+			return $isAnswerCorrect
+				? `${baseClasses} bg-green-500 text-white`
+				: `${baseClasses} bg-red-500 text-white`;
+		}
+
+		return `${baseClasses} bg-white text-black`;
 	}
-
-	$effect(() => {
-		if (quizState.currentQuestion) {
-			const answers = [
-				...quizState.currentQuestion.incorrect_answers,
-				quizState.currentQuestion.correct_answer
-			];
-			quizState.shuffledAnswers = shuffleAnswers(answers);
-		}
-	});
 
 	function formatCategoryName(category) {
 		if (!category) return 'Quiz';
@@ -109,15 +115,7 @@
 			<div class="space-y-2 fade-in delay-2">
 				{#each quizState.shuffledAnswers as answer (answer)}
 					<button
-						class={`w-full p-2 rounded-md transition-colors duration-200 ${
-							$selectedAnswer === null
-								? 'bg-white text-black hover:bg-blue-500 hover:text-white'
-								: $selectedAnswer === answer
-									? $isAnswerCorrect
-										? 'bg-green-500 text-white'
-										: 'bg-red-500 text-white'
-									: 'bg-white text-black'
-						}`}
+						class={getAnswerButtonClasses(answer)}
 						disabled={$selectedAnswer !== null}
 						onclick={() => handleQuizAnswer(answer)}
 					>
