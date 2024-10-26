@@ -12,7 +12,7 @@
 	let classList = $derived(
 		[
 			// Conditional base styles
-			'px-5 py-2 rounded-md transition-colors duration-200 border',
+			'px-5 py-3 rounded-md transition-colors duration-200 border',
 
 			// Width control
 			fullWidth ? 'w-full' : 'inline-block',
