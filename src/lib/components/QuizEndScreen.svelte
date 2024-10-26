@@ -5,14 +5,14 @@
 	import { goto } from '$app/navigation';
 
 	// Quiz utilities and stores
-	import { resetQuiz } from '$lib/utils/quizUtils';
+	import { resetQuiz, formatTime } from '$lib/utils/quizUtils';
 	import { questions, score } from '$lib/stores/quizStore';
 
 	// UI Component
 	import Button from './Button.svelte';
 
 	// Add totalTime as a prop
-	const { totalTime } = $props();
+	const { totalTime } = $props(); // Receives the prop value reactively
 
 	// Creates a dispatcher to send events up to parent components, allowing child-to-parent communication
 	const dispatch = createEventDispatcher();
@@ -25,13 +25,6 @@
 
 	// Compute total questions once and update when $questions changes
 	let totalQuestions = $derived($questions.length);
-
-	// Formats seconds into MM:SS
-	function formatTime(seconds) {
-		const minutes = Math.floor(seconds / 60);
-		const remainingSeconds = seconds % 60;
-		return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-	}
 </script>
 
 <div class="text-white text-center md:w-[32rem] space-y-5">
