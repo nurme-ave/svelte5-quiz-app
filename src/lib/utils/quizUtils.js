@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 
-import { preloadImage } from './imagePreLoader';
+import { preloadImage } from './imagePreloader';
 
 import { CATEGORY_MAPPING, BACKGROUND_IMAGES } from './quizConstants';
 
