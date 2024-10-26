@@ -178,7 +178,7 @@
 	}
 </script>
 
-<div class="mx-auto text-white md:w-[32rem] fade-in-from-top delay-1">
+<div class="mx-auto text-white max-w-lg fade-in-from-top delay-1 w-full">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">
 		{formatCategoryName($quizCategory)} Quiz
 	</h1>
@@ -187,7 +187,7 @@
 		<p class="text-red-500">Failed to load questions. Please try again.</p>
 	{:else if !quizState.quizStarted && quizState.countdown > 0}
 		<div class="text-center py-12">
-			<p class="text-2xl mb-8">Get Ready!</p>
+			<p class="text-2xl mb-10">Get Ready!</p>
 			<p class="text-6xl font-bold text-yellow-300 animate-bounce">{quizState.countdown}</p>
 		</div>
 	{:else if quizState.quizEnded}
@@ -210,9 +210,11 @@
 			></div>
 		</div>
 
-		<div class="flex flex-col">
+		<div class="flex flex-col w-full">
 			<div class="flex flex-col justify-center items-center w-full">
-				<div class="flex items-center justify-center h-[5rem] sm:h-[4rem] lg:h-[3.5rem] px-4 mb-8">
+				<div
+					class="flex items-center justify-center h-[5rem] sm:h-[4rem] lg:h-[3.5rem] px-4 mb-8 w-full"
+				>
 					<p class="text-center">{@html quizState.currentQuestion.question}</p>
 				</div>
 
