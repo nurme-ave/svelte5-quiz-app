@@ -140,7 +140,7 @@
 	}
 
 	function getAnswerButtonClasses(answer) {
-		const baseClasses = 'w-full p-2 rounded-md transition-colors duration-200';
+		const baseClasses = 'w-full px-2 py-3 rounded-md transition-colors duration-200';
 
 		if ($selectedAnswer === null) {
 			return `${baseClasses} bg-white text-black hover:bg-blue-500 hover:text-white`;
