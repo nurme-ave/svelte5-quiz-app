@@ -18,7 +18,7 @@ body {
 	content: '';
 	position: absolute;
 	inset: 0;
-	background-color: rgba(0, 0, 0, 0.65); /* This is equivalent to bg-black bg-opacity-50 */
+	background-color: rgba(0, 0, 0, 0.65);
 	z-index: 1;
 }
 
@@ -38,26 +38,25 @@ body {
 	}
 }
 
-.fade-in-from-top {
+.fade-in-from-top.animate {
 	opacity: 0;
 	animation: fadeInFromTop 2.5s ease-out forwards;
 	will-change: opacity;
-	/* By specifying the 'will-change: opacity;' we're telling the browser, "Hey, the opacity of this element is likely to change soon, so please optimize for that." */
 }
 
-.delay-1 {
+.animate.delay-1 {
 	animation-delay: 0.25s;
 }
 
-.delay-2 {
+.animate.delay-2 {
 	animation-delay: 0.5s;
 }
 
-.delay-3 {
+.animate.delay-3 {
 	animation-delay: 0.75s;
 }
 
-.delay-4 {
+.animate.delay-4 {
 	animation-delay: 3s;
 }
 
@@ -76,27 +75,26 @@ body {
 	}
 }
 
-.stagger-fade-in {
+.stagger-fade-in.animate {
 	opacity: 0;
 	animation: staggerFadeIn 0.75s ease forwards;
 }
 
-/* Add animation delay classes */
-.stagger-delay-0 {
+.animate.stagger-delay-0 {
 	animation-delay: 0s;
 }
-.stagger-delay-1 {
+.animate.stagger-delay-1 {
 	animation-delay: 0.1s;
 }
-.stagger-delay-2 {
+.animate.stagger-delay-2 {
 	animation-delay: 0.2s;
 }
-.stagger-delay-3 {
+.animate.stagger-delay-3 {
 	animation-delay: 0.3s;
 }
-.stagger-delay-4 {
+.animate.stagger-delay-4 {
 	animation-delay: 0.4s;
 }
-.stagger-delay-5 {
+.animate.stagger-delay-5 {
 	animation-delay: 0.5s;
 }

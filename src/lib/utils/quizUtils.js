@@ -1,4 +1,5 @@
 import { get } from 'svelte/store';
+
 import {
 	questions,
 	currentQuestionIndex,
@@ -22,9 +23,37 @@ export const CATEGORY_MAPPING = {
 	vehicles: 28
 };
 
+// Reverse mapping
 export const CATEGORY_ID_TO_NAME = Object.fromEntries(
 	Object.entries(CATEGORY_MAPPING).map(([name, id]) => [id, name])
 );
+
+export function selectCategory(selectedCategory, category) {
+	selectedCategory.set(category.toLowerCase());
+}
+
+export function selectDifficulty(selectedDifficulty, difficulty) {
+	selectedDifficulty.set(difficulty.toLowerCase());
+}
+
+export function selectQuestionCount(selectedQuestionCount, count) {
+	selectedQuestionCount.set(count);
+}
+
+export function startQuiz(
+	selectedCategory,
+	selectedDifficulty,
+	selectedQuestionCount,
+	setQuizCategory
+) {
+	if (selectedCategory && selectedDifficulty && selectedQuestionCount) {
+		const categoryId = CATEGORY_MAPPING[selectedCategory];
+		setQuizCategory(selectedCategory);
+		return `/quiz?category=${categoryId}&difficulty=${selectedDifficulty}&questions=${selectedQuestionCount}`;
+	} else {
+		throw new Error('Please select a category, difficulty level, and number of questions.');
+	}
+}
 
 export async function fetchQuestions(categoryId, difficulty, count) {
 	loading.set(true);
@@ -62,45 +91,7 @@ export function handleAnswer(answer) {
 	return isCorrect;
 }
 
-export function resetQuiz() {
-	questions.set([]);
-	currentQuestionIndex.set(0);
-	score.set(0);
-	loading.set(true);
-	selectedCategory.set(null);
-	selectedDifficulty.set(null);
-	selectedQuestionCount.set(null);
-	selectedAnswer.set(null);
-	isAnswerCorrect.set(null);
-}
-
-export function selectCategory(selectedCategory, category) {
-	selectedCategory.set(category.toLowerCase());
-}
-
-export function selectDifficulty(selectedDifficulty, difficulty) {
-	selectedDifficulty.set(difficulty.toLowerCase());
-}
-
-export function selectQuestionCount(selectedQuestionCount, count) {
-	selectedQuestionCount.set(count);
-}
-
-export function startQuiz(
-	selectedCategory,
-	selectedDifficulty,
-	selectedQuestionCount,
-	setQuizCategory
-) {
-	if (selectedCategory && selectedDifficulty && selectedQuestionCount) {
-		const categoryId = CATEGORY_MAPPING[selectedCategory];
-		setQuizCategory(selectedCategory);
-		return `/quiz?category=${categoryId}&difficulty=${selectedDifficulty}&questions=${selectedQuestionCount}`;
-	} else {
-		throw new Error('Please select a category, difficulty level, and number of questions.');
-	}
-}
-
+// Fisher-Yates shuffle algorithm
 export function shuffleArray(array) {
 	const shuffled = [...array];
 	let currentIndex = shuffled.length;
@@ -117,4 +108,16 @@ export function shuffleArray(array) {
 	}
 
 	return shuffled;
+}
+
+export function resetQuiz() {
+	questions.set([]);
+	currentQuestionIndex.set(0);
+	score.set(0);
+	loading.set(true);
+	selectedCategory.set(null);
+	selectedDifficulty.set(null);
+	selectedQuestionCount.set(null);
+	selectedAnswer.set(null);
+	isAnswerCorrect.set(null);
 }

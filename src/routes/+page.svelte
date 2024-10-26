@@ -1,9 +1,12 @@
 <script>
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	// SvelteKit specific imports
+	import { goto } from '$app/navigation'; // For navigation
+	import { onMount } from 'svelte'; // Lifecycle hook
 
+	// UI Component
 	import Button from '$lib/components/Button.svelte';
 
+	// Quiz-specific constants, utilities and stores
 	import {
 		QUIZ_CATEGORIES,
 		QUIZ_DIFFICULTIES,
@@ -46,7 +49,7 @@
 </script>
 
 <div class="text-white opacity-95">
-	<div class="fade-in-from-top delay-1">
+	<div class="animate fade-in-from-top delay-1">
 		<h1 class="text-4xl md:text-5xl font-semibold pb-3 uppercase balanced-text">
 			Welcome to the <span class="text-yellow-300">Quiz&nbsp;</span>App
 		</h1>
@@ -59,13 +62,13 @@
 		</div>
 	</div>
 
-	<hr class="mt-7 border border-yellow-400 fade-in-from-top delay-2" />
+	<hr class="mt-7 border border-yellow-400 animate fade-in-from-top delay-2" />
 
 	<div class="flex flex-col gap-2 mt-7">
-		<h2 class="font-semibold uppercase fade-in-from-top delay-2">Select a category:</h2>
+		<h2 class="font-semibold uppercase animate fade-in-from-top delay-2">Select a category:</h2>
 		<div class="mb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
 			{#each QUIZ_CATEGORIES as category, i}
-				<div class="stagger-fade-in {STAGGER_DELAY_CLASSES[i]}">
+				<div class="animate stagger-fade-in {STAGGER_DELAY_CLASSES[i]}">
 					<Button
 						onclick={() => selectCategory(selectedCategory, category)}
 						selected={$selectedCategory === category.toLowerCase()}
@@ -77,7 +80,7 @@
 			{/each}
 		</div>
 
-		<div class="fade-in-from-top delay-2">
+		<div class="animate fade-in-from-top delay-2">
 			<div class="mb-6">
 				<h2 class="font-semibold uppercase mb-2">Select difficulty:</h2>
 				<div class="space-x-2">
