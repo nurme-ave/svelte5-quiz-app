@@ -210,15 +210,15 @@
 			></div>
 		</div>
 
-		<div class="flex flex-col w-full">
-			<div class="flex flex-col justify-center items-center w-full">
+		<div class="w-full">
+			<div class="w-full">
 				<div
 					class="flex items-center justify-center h-[5rem] sm:h-[4rem] lg:h-[3.5rem] px-4 mb-8 w-full"
 				>
 					<p class="text-center">{@html quizState.currentQuestion.question}</p>
 				</div>
 
-				<div class="space-y-2 delay-3 w-full">
+				<div class="grid gap-2 w-full">
 					{#each quizState.shuffledAnswers as answer (answer)}
 						<button
 							class={getAnswerButtonClasses(answer)}
