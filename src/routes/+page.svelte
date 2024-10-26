@@ -1,7 +1,7 @@
 <script>
 	// SvelteKit specific imports
 	import { goto } from '$app/navigation'; // For navigation
-	import { onMount } from 'svelte'; // Lifecycle hook
+	import { onMount, onDestroy } from 'svelte'; // Lifecycle hook
 
 	// UI Component
 	import Button from '$lib/components/Button.svelte';
@@ -29,24 +29,101 @@
 		selectedQuestionCount
 	} from '$lib/stores/quizStore';
 
-	function handleStartQuiz() {
+	let isLoading = $state(false);
+	let loadingProgress = $state('');
+	let countdown = $state(3);
+	let countdownTimer;
+
+	async function handleStartQuiz() {
+		if (!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount) {
+			alert('Please select a category, difficulty level, and number of questions.');
+			return;
+		}
+
 		try {
-			const path = startQuiz(
+			isLoading = true;
+
+			const { path, loadingPromise } = await startQuiz(
 				$selectedCategory,
 				$selectedDifficulty,
 				$selectedQuestionCount,
 				setQuizCategory
 			);
+
+			loadingProgress = 'Preparing quiz...';
+			await loadingPromise;
+
+			loadingProgress = 'Get Ready!';
+
+			// Use a more controlled countdown approach
+			await new Promise((resolve) => {
+				let remaining = countdown;
+				countdownTimer = setInterval(() => {
+					if (remaining > 0) {
+						remaining--;
+						countdown = remaining;
+					} else {
+						clearInterval(countdownTimer);
+						resolve();
+					}
+				}, 1000);
+			});
+
 			goto(path);
 		} catch (error) {
 			alert(error.message);
+		} finally {
+			if (countdownTimer) {
+				clearInterval(countdownTimer);
+			}
+			isLoading = false;
+			loadingProgress = '';
+			countdown = 3;
 		}
 	}
+
+	onDestroy(() => {
+		if (countdownTimer) {
+			clearInterval(countdownTimer);
+		}
+	});
 
 	onMount(() => {
 		resetQuiz();
 	});
 </script>
+
+<!-- Loading overlay -->
+{#if isLoading}
+	<div class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+		<div class="text-center">
+			<div class="text-2xl text-yellow-300 mb-6">{loadingProgress}</div>
+
+			{#if loadingProgress === 'Get Ready!'}
+				<!-- Countdown display -->
+				<div class="text-6xl font-bold text-yellow-300 animate-bounce">
+					{countdown}
+				</div>
+			{:else}
+				<!-- Loading animation -->
+				<div class="flex items-center justify-center gap-3">
+					<div
+						class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+						style="animation-delay: 0s"
+					></div>
+					<div
+						class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+						style="animation-delay: 0.2s"
+					></div>
+					<div
+						class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+						style="animation-delay: 0.4s"
+					></div>
+				</div>
+			{/if}
+		</div>
+	</div>
+{/if}
 
 <div class="text-white opacity-95">
 	<div class="animate fade-in-from-top delay-1">
@@ -112,7 +189,7 @@
 
 		<Button
 			onclick={handleStartQuiz}
-			disabled={!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount}
+			disabled={!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount || isLoading}
 			variant="primary"
 			customClass="w-36 text-lg font-semibold mx-auto fade-in-from-top delay-3 mt-7"
 		>

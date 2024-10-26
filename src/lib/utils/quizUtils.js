@@ -1,10 +1,13 @@
 import { get } from 'svelte/store';
 
+import { preloadImage } from './imagePreLoader';
+
+import { CATEGORY_MAPPING, BACKGROUND_IMAGES } from './quizConstants';
+
 import {
 	questions,
 	currentQuestionIndex,
 	score,
-	loading,
 	selectedCategory,
 	selectedDifficulty,
 	selectedQuestionCount,
@@ -13,15 +16,6 @@ import {
 } from '../stores/quizStore';
 
 export const QUIZ_API_BASE_URL = 'https://opentdb.com/api.php';
-
-export const CATEGORY_MAPPING = {
-	film: 11,
-	music: 12,
-	sports: 21,
-	geography: 22,
-	history: 23,
-	vehicles: 28
-};
 
 // Reverse mapping
 export const CATEGORY_ID_TO_NAME = Object.fromEntries(
@@ -40,23 +34,30 @@ export function selectQuestionCount(selectedQuestionCount, count) {
 	selectedQuestionCount.set(count);
 }
 
-export function startQuiz(
+export async function startQuiz(
 	selectedCategory,
 	selectedDifficulty,
 	selectedQuestionCount,
 	setQuizCategory
 ) {
-	if (selectedCategory && selectedDifficulty && selectedQuestionCount) {
-		const categoryId = CATEGORY_MAPPING[selectedCategory];
-		setQuizCategory(selectedCategory);
-		return `/quiz?category=${categoryId}&difficulty=${selectedDifficulty}&questions=${selectedQuestionCount}`;
-	} else {
+	if (!(selectedCategory && selectedDifficulty && selectedQuestionCount)) {
 		throw new Error('Please select a category, difficulty level, and number of questions.');
 	}
+
+	const categoryId = CATEGORY_MAPPING[selectedCategory];
+	setQuizCategory(selectedCategory);
+
+	// Return the path and loading promise
+	return {
+		path: `/quiz?category=${categoryId}&difficulty=${selectedDifficulty}&questions=${selectedQuestionCount}`,
+		loadingPromise: Promise.all([
+			fetchQuizData(categoryId, selectedDifficulty, selectedQuestionCount),
+			preloadImage(BACKGROUND_IMAGES[selectedCategory])
+		])
+	};
 }
 
-export async function fetchQuestions(categoryId, difficulty, count) {
-	loading.set(true);
+export async function fetchQuizData(categoryId, difficulty, count) {
 	try {
 		const url = new URL(QUIZ_API_BASE_URL);
 		url.searchParams.append('amount', count);
@@ -70,11 +71,10 @@ export async function fetchQuestions(categoryId, difficulty, count) {
 		}
 		const data = await response.json();
 		questions.set(data.results);
+		return data.results;
 	} catch (error) {
 		console.error('Failed to fetch questions:', error);
 		throw error;
-	} finally {
-		loading.set(false);
 	}
 }
 
@@ -114,7 +114,6 @@ export function resetQuiz() {
 	questions.set([]);
 	currentQuestionIndex.set(0);
 	score.set(0);
-	loading.set(true);
 	selectedCategory.set(null);
 	selectedDifficulty.set(null);
 	selectedQuestionCount.set(null);

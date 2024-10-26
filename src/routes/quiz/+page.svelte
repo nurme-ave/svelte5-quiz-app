@@ -1,8 +1,7 @@
 <script>
 	// SvelteKit specific imports
-	import { page } from '$app/stores'; // For accessing URL parameters
 	import { goto } from '$app/navigation'; // For navigation
-	import { onMount } from 'svelte'; // Lifecycle hook
+	import { onMount, onDestroy } from 'svelte'; // Lifecycle hook
 
 	// UI Component imports
 	import Button from '$lib/components/Button.svelte';
@@ -12,26 +11,20 @@
 
 	// Quiz-specific utilities and stores
 	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
-	import {
-		fetchQuestions,
-		handleAnswer,
-		resetQuiz,
-		shuffleArray,
-		formatTime
-	} from '$lib/utils/quizUtils';
+	import { handleAnswer, resetQuiz, shuffleArray, formatTime } from '$lib/utils/quizUtils';
 	import {
 		quizCategory,
 		questions,
 		currentQuestionIndex,
 		score,
-		loading,
 		selectedAnswer,
 		isAnswerCorrect
 	} from '$lib/stores/quizStore';
 
+	let quizTimer; // Add reference to store the timer
+
 	// Constants
 	const QUESTION_TIME_LIMIT = 15; // Seconds per question
-	const COUNTDOWN_START = 5; // Initial countdown duration
 
 	let quizState = $state({
 		loadError: false, // Tracks if there was an error loading questions
@@ -40,46 +33,37 @@
 		currentQuestion: null, // Current question being displayed
 		totalTime: 0, // Total time spent on quiz
 		questionTime: QUESTION_TIME_LIMIT, // Time remaining for current question
-		countdown: COUNTDOWN_START, // Initial countdown value
-		quizStarted: false // Indicates if quiz has started after countdown
+		isInitializing: true
 	});
 
 	// Initialize quiz on mount
-	onMount(async () => {
-		loading.set(true);
+	onMount(() => {
 		try {
-			// Get quiz parameters from URL
-			const categoryId = $page.url.searchParams.get('category');
-			const difficulty = $page.url.searchParams.get('difficulty');
-			const questionCount = $page.url.searchParams.get('questions');
-
-			if (!categoryId || !difficulty || !questionCount) {
-				throw new Error('Missing required parameters');
+			if ($questions.length > 0) {
+				const currentQ = $questions[0];
+				quizState.currentQuestion = currentQ;
+				quizState.shuffledAnswers = shuffleArray([
+					...currentQ.incorrect_answers,
+					currentQ.correct_answer
+				]);
+				quizTimer = startQuizTimer(); // Store timer reference
+			} else {
+				throw new Error('No questions available');
 			}
-
-			// Fetch questions and start countdown
-			await fetchQuestions(categoryId, difficulty, questionCount);
-			startCountdown();
 		} catch (error) {
-			console.error('Failed to load questions:', error);
+			console.error('Failed to initialize quiz:', error);
 			quizState.loadError = true;
 		} finally {
-			loading.set(false);
+			quizState.isInitializing = false;
 		}
 	});
 
-	// Handles the initial countdown before quiz starts
-	function startCountdown() {
-		const timer = setInterval(() => {
-			if (quizState.countdown > 0) {
-				quizState.countdown -= 1;
-			} else {
-				clearInterval(timer);
-				quizState.quizStarted = true;
-				startQuizTimer();
-			}
-		}, 1000);
-	}
+	// Add cleanup
+	onDestroy(() => {
+		if (quizTimer) {
+			clearInterval(quizTimer);
+		}
+	});
 
 	// Manages the timer during the quiz
 	function startQuizTimer() {
@@ -96,7 +80,7 @@
 			}
 		}, 1000);
 
-		return () => clearInterval(timer);
+		return timer; // Return timer reference
 	}
 
 	// Updates current question when question index changes
@@ -105,8 +89,6 @@
 			const currentQ = $questions[$currentQuestionIndex];
 			if (currentQ) {
 				quizState.currentQuestion = currentQ;
-
-				// Shuffle answers including the correct one
 				quizState.shuffledAnswers = shuffleArray([
 					...currentQ.incorrect_answers,
 					currentQ.correct_answer
@@ -129,7 +111,14 @@
 		$selectedAnswer = answer;
 		$isAnswerCorrect = answer === quizState.currentQuestion.correct_answer;
 		handleAnswer(answer);
-		setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
+
+		// Use a reference for the timeout
+		const answerTimeout = setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
+
+		// Clean up on component destroy
+		onDestroy(() => {
+			clearTimeout(answerTimeout);
+		});
 	}
 
 	// Moves to next question or ends quiz
@@ -161,7 +150,9 @@
 		{formatCategoryName($quizCategory)} Quiz
 	</h1>
 
-	{#if quizState.loadError}
+	{#if quizState.isInitializing}
+		<!-- Show nothing during initialization -->
+	{:else if quizState.loadError}
 		<div class="text-center">
 			<p class="text-red-500 mb-4">Failed to load questions. Please try again.</p>
 			<Button
@@ -171,11 +162,6 @@
 			>
 				Go Back
 			</Button>
-		</div>
-	{:else if !quizState.quizStarted && quizState.countdown > 0}
-		<div class="text-center py-12">
-			<p class="text-2xl mb-10">Get Ready!</p>
-			<p class="text-5xl font-bold text-yellow-300 animate-bounce">{quizState.countdown}</p>
 		</div>
 	{:else if quizState.quizEnded}
 		<div class="space-y-4">
@@ -205,17 +191,6 @@
 				customClass="w-32 bg-red-500 hover:bg-red-600 border-red-500 mx-auto mt-4"
 			>
 				Restart
-			</Button>
-		</div>
-	{:else}
-		<div class="text-center">
-			<p class="mb-4">No questions available. Please try again.</p>
-			<Button
-				onclick={restartQuiz}
-				variant="primary"
-				customClass="w-32 bg-red-500 hover:bg-red-600 border-red-500"
-			>
-				Go Back
 			</Button>
 		</div>
 	{/if}
