@@ -47,7 +47,6 @@ export async function startQuiz(
 	const categoryId = CATEGORY_MAPPING[selectedCategory];
 	setQuizCategory(selectedCategory);
 
-	// Return the path and loading promise
 	return {
 		path: `/quiz?category=${categoryId}&difficulty=${selectedDifficulty}&questions=${selectedQuestionCount}`,
 		loadingPromise: Promise.all([
