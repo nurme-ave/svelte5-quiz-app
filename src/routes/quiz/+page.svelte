@@ -211,7 +211,7 @@
 		</div>
 
 		<div class="flex flex-col">
-			<div class="flex flex-col justify-center items-center flex-grow">
+			<div class="flex flex-col justify-center items-cente w-full">
 				<div class="flex items-center justify-center h-[5rem] sm:h-[4rem] lg:h-[3.5rem] px-4 mb-8">
 					<p class="text-center">{@html quizState.currentQuestion.question}</p>
 				</div>
