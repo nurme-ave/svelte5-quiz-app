@@ -121,3 +121,9 @@ export function resetQuiz() {
 	selectedAnswer.set(null);
 	isAnswerCorrect.set(null);
 }
+
+export function formatTime(seconds) {
+	const minutes = Math.floor(seconds / 60);
+	const remainingSeconds = seconds % 60;
+	return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}

@@ -12,7 +12,13 @@
 
 	// Quiz-specific utilities and stores
 	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
-	import { fetchQuestions, handleAnswer, resetQuiz, shuffleArray } from '$lib/utils/quizUtils';
+	import {
+		fetchQuestions,
+		handleAnswer,
+		resetQuiz,
+		shuffleArray,
+		formatTime
+	} from '$lib/utils/quizUtils';
 	import {
 		quizCategory,
 		questions,
@@ -143,13 +149,6 @@
 		goto('/');
 	}
 
-	// Formats seconds into MM:SS
-	function formatTime(seconds) {
-		const minutes = Math.floor(seconds / 60);
-		const remainingSeconds = seconds % 60;
-		return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-	}
-
 	// Formats category name with capitalized first letter
 	function formatCategoryName(category) {
 		if (!category) return 'Quiz';
@@ -179,8 +178,9 @@
 			<p class="text-5xl font-bold text-yellow-300 animate-bounce">{quizState.countdown}</p>
 		</div>
 	{:else if quizState.quizEnded}
-		<QuizEndScreen onrestart={restartQuiz} />
-		<p class="text-center mt-4">Total Time: {formatTime(quizState.totalTime)}</p>
+		<div class="space-y-4">
+			<QuizEndScreen onrestart={restartQuiz} totalTime={quizState.totalTime} />
+		</div>
 	{:else if quizState.currentQuestion && $questions.length > 0}
 		<div class="flex justify-between items-center mb-6 text-base">
 			<h2>Question {$currentQuestionIndex + 1} of {$questions.length}</h2>

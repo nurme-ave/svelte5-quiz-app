@@ -11,6 +11,9 @@
 	// UI Component
 	import Button from './Button.svelte';
 
+	// Add totalTime as a prop
+	const { totalTime } = $props();
+
 	// Creates a dispatcher to send events up to parent components, allowing child-to-parent communication
 	const dispatch = createEventDispatcher();
 
@@ -22,22 +25,22 @@
 
 	// Compute total questions once and update when $questions changes
 	let totalQuestions = $derived($questions.length);
+
+	// Formats seconds into MM:SS
+	function formatTime(seconds) {
+		const minutes = Math.floor(seconds / 60);
+		const remainingSeconds = seconds % 60;
+		return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+	}
 </script>
 
 <div class="text-white text-center md:w-[32rem] space-y-5">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4">Congratulations!</h1>
-	<div class="md:text-lg">
-		<p>You've completed the quiz! <i class="fa-solid fa-trophy text-yellow-300"></i></p>
+	<div class="md:text-lg space-y-2">
+		<i class="fa-solid fa-trophy fa-3x text-yellow-300 mb-4"></i>
+		<p>You've completed the quiz!</p>
 		<p>Your score: {$score} / {totalQuestions}</p>
-		<p class="balanced-text">
-			{#if $score === totalQuestions}
-				Perfect score! You're a quiz&nbsp;master!
-			{:else if $score > totalQuestions / 2}
-				Great job! You did well!
-			{:else}
-				Nice try! There's room for improvement.
-			{/if}
-		</p>
+		<p>Total time: {formatTime(totalTime)}</p>
 	</div>
 	<Button onclick={restartQuiz} variant="primary" customClass="w-44 text-lg font-semibold mx-auto">
 		Start New Quiz
