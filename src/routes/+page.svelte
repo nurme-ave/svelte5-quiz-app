@@ -32,6 +32,7 @@
 	let isLoading = $state(false);
 	let loadingProgress = $state('');
 	let countdown = $state(3);
+	let isNavigating = $state(false);
 	let countdownTimer;
 
 	async function handleStartQuiz() {
@@ -55,7 +56,7 @@
 
 			loadingProgress = 'Get Ready!';
 
-			// Use a more controlled countdown approach
+			// Countdown using a controlled timer
 			await new Promise((resolve) => {
 				let remaining = countdown;
 				countdownTimer = setInterval(() => {
@@ -69,9 +70,16 @@
 				}, 1000);
 			});
 
-			goto(path);
+			// Set navigating state before navigation
+			isNavigating = true;
+			// Small delay to ensure the overlay stays during navigation
+			await new Promise((resolve) => setTimeout(resolve, 100));
+
+			// Navigate to quiz
+			await goto(path);
 		} catch (error) {
 			alert(error.message);
+			isNavigating = false;
 		} finally {
 			if (countdownTimer) {
 				clearInterval(countdownTimer);
@@ -79,33 +87,32 @@
 			isLoading = false;
 			loadingProgress = '';
 			countdown = 3;
+			// isNavigating stays true during navigation
 		}
 	}
+
+	onMount(() => {
+		resetQuiz();
+	});
 
 	onDestroy(() => {
 		if (countdownTimer) {
 			clearInterval(countdownTimer);
 		}
 	});
-
-	onMount(() => {
-		resetQuiz();
-	});
 </script>
 
 <!-- Loading overlay -->
-{#if isLoading}
+{#if isLoading || isNavigating}
 	<div class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
 		<div class="text-center">
 			<div class="text-2xl text-yellow-300 mb-6">{loadingProgress}</div>
 
 			{#if loadingProgress === 'Get Ready!'}
-				<!-- Countdown display -->
 				<div class="text-6xl font-bold text-yellow-300 animate-bounce">
 					{countdown}
 				</div>
 			{:else}
-				<!-- Loading animation -->
 				<div class="flex items-center justify-center gap-3">
 					<div
 						class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
