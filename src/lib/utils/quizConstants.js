@@ -1,6 +1,6 @@
 export const QUIZ_CATEGORIES = ['Film', 'Music', 'Sports', 'History', 'Vehicles', 'Geography'];
 export const QUIZ_DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
-export const QUIZ_QUESTION_COUNTS = [2, 10, 15];
+export const QUIZ_QUESTION_COUNTS = [5, 10, 15];
 export const ANSWER_DISPLAY_DURATION = 1000;
 
 export const STAGGER_DELAY_CLASSES = [

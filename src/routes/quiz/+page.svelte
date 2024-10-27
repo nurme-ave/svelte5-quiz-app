@@ -25,6 +25,24 @@
 	// Constants
 	const QUESTION_TIME_LIMIT = 15; // Seconds per question
 
+	// Helper function #1 for cleanup
+	// Full timer cleanup (clear interval and nullify reference)
+	function clearQuizTimer() {
+		if (quizTimer) {
+			clearInterval(quizTimer);
+			quizTimer = null;
+		}
+	}
+
+	// Helper function #2 for cleanup
+	// Full timeout cleanup (clear timeout and nullify reference)
+	function clearAnswerTimeout() {
+		if (answerTimeout) {
+			clearTimeout(answerTimeout);
+			answerTimeout = null;
+		}
+	}
+
 	let quizState = $state({
 		loadError: false, // Tracks if there was an error loading questions
 		quizEnded: false, // Indicates if the quiz is complete
@@ -53,12 +71,14 @@
 
 	// Add cleanup
 	onDestroy(() => {
-		if (quizTimer) clearInterval(quizTimer);
-		if (answerTimeout) clearTimeout(answerTimeout);
+		clearQuizTimer();
+		clearAnswerTimeout();
 	});
 
 	// Manages the timer during the quiz
 	function startQuizTimer() {
+		clearQuizTimer(); // Full cleanup of any existing timer before starting new one
+
 		return setInterval(() => {
 			if (!quizState.quizEnded) {
 				quizState.totalTime += 1;
@@ -68,7 +88,7 @@
 					handleTimeUp();
 				}
 			} else {
-				clearInterval(quizTimer);
+				clearInterval(quizTimer); // Simple interval clear is sufficient here
 			}
 		}, 1000);
 	}
@@ -91,6 +111,8 @@
 
 	// Handles when time runs out for a question
 	function handleTimeUp() {
+		clearQuizTimer();
+
 		if (!$quizStore.selectedAnswer) {
 			handleAnswer(null);
 		}
@@ -99,17 +121,8 @@
 
 	// Processes user's answer
 	function handleQuizAnswer(answer) {
-		// Clear the quiz timer (the countdown timer for questions)
-		if (quizTimer) {
-			clearInterval(quizTimer);
-			quizTimer = null;
-		}
-
-		// Clear any existing answer timeout
-		if (answerTimeout) {
-			clearTimeout(answerTimeout);
-			answerTimeout = null;
-		}
+		clearQuizTimer();
+		clearAnswerTimeout();
 
 		// Process the answer
 		const isCorrect = answer === $currentQuestion.correct_answer;
@@ -125,17 +138,11 @@
 
 	// Moves to next question or ends quiz
 	function advanceQuiz() {
-		if (answerTimeout) {
-			clearTimeout(answerTimeout);
-			answerTimeout = null;
-		}
+		clearAnswerTimeout();
+		clearQuizTimer();
 
 		if ($isQuizComplete) {
 			quizState.quizEnded = true;
-			if (quizTimer) {
-				clearInterval(quizTimer);
-				quizTimer = null;
-			}
 		} else {
 			updateQuizState({
 				selectedAnswer: null,
@@ -143,7 +150,9 @@
 				currentQuestionIndex: $quizStore.currentQuestionIndex + 1
 			});
 
-			// Restart the timer for the next question
+			// Reset question time before starting new timer
+			quizState.questionTime = QUESTION_TIME_LIMIT;
+			// Start new timer
 			quizTimer = startQuizTimer();
 		}
 	}
@@ -162,7 +171,7 @@
 </script>
 
 <div class="mx-auto text-white max-w-lg w-full">
-	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">
+	<h1 class="text-2xl md:text-3xl font-bold mb-8 text-yellow-300">
 		{formatCategoryName($quizStore.selectedCategory)} Quiz
 	</h1>
 
