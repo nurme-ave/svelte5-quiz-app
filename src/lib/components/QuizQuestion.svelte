@@ -26,6 +26,7 @@
 
 <div class="w-full">
 	<div class="flex items-center justify-center h-[5rem] sm:h-[4rem] lg:h-[3.5rem] px-4 mb-8 w-full">
+		<!-- @html directive safely converts and renders HTML strings, including HTML entities.  -->
 		<p class="text-center">{@html question}</p>
 	</div>
 

@@ -23,7 +23,6 @@
 	} from '$lib/utils/quizUtils';
 
 	import {
-		setQuizCategory,
 		selectedCategory,
 		selectedDifficulty,
 		selectedQuestionCount
@@ -47,8 +46,7 @@
 			const { path, loadingPromise } = await startQuiz(
 				$selectedCategory,
 				$selectedDifficulty,
-				$selectedQuestionCount,
-				setQuizCategory
+				$selectedQuestionCount
 			);
 
 			loadingProgress = 'Preparing quiz...';

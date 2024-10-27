@@ -1,6 +1,7 @@
 <script>
 	// Event handling for parent component communication
 	import { createEventDispatcher } from 'svelte';
+
 	// Navigation
 	import { goto } from '$app/navigation';
 

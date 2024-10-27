@@ -12,7 +12,8 @@ import {
 	selectedDifficulty,
 	selectedQuestionCount,
 	selectedAnswer,
-	isAnswerCorrect
+	isAnswerCorrect,
+	setQuizCategory
 } from '../stores/quizStore';
 
 export const QUIZ_API_BASE_URL = 'https://opentdb.com/api.php';
@@ -38,7 +39,6 @@ export async function startQuiz(
 	selectedCategory,
 	selectedDifficulty,
 	selectedQuestionCount,
-	setQuizCategory
 ) {
 	if (!(selectedCategory && selectedDifficulty && selectedQuestionCount)) {
 		throw new Error('Please select a category, difficulty level, and number of questions.');
@@ -124,4 +124,12 @@ export function formatTime(seconds) {
 	const minutes = Math.floor(seconds / 60);
 	const remainingSeconds = seconds % 60;
 	return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+// Helper functions
+// export const quizCategory = selectedCategory;
+
+
+export function getQuizBackgroundImage(category) {
+	return BACKGROUND_IMAGES[category] || BACKGROUND_IMAGES.default;
 }

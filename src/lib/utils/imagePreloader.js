@@ -6,5 +6,3 @@ export const preloadImage = (src) => {
 		img.src = src;
 	});
 };
-
-

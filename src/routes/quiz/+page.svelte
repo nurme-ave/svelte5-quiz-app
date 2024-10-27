@@ -13,12 +13,12 @@
 	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
 	import { handleAnswer, resetQuiz, shuffleArray, formatTime } from '$lib/utils/quizUtils';
 	import {
-		quizCategory,
 		questions,
 		currentQuestionIndex,
 		score,
 		selectedAnswer,
-		isAnswerCorrect
+		isAnswerCorrect,
+		selectedCategory
 	} from '$lib/stores/quizStore';
 
 	let quizTimer; // Add reference to store the timer
@@ -151,7 +151,7 @@
 
 <div class="mx-auto text-white max-w-lg w-full">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">
-		{formatCategoryName($quizCategory)} Quiz
+		{formatCategoryName($selectedCategory)} Quiz
 	</h1>
 
 	{#if quizState.isInitializing}

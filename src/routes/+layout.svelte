@@ -1,9 +1,10 @@
 <script>
 	import '../app.css';
-	import { page } from '$app/stores';
-	import { quizCategory, getQuizBackgroundImage } from '$lib/stores/quizStore';
-	import { preloadImage } from '$lib/utils/imagePreloader';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores'; // Contains information about the current page request
+	import { getQuizBackgroundImage } from '$lib/utils/quizUtils';
+	import { selectedCategory } from '$lib/stores/quizStore';
+	import { preloadImage } from '$lib/utils/imagePreloader';
 
 	let { children } = $props();
 	let isInitialLoading = $state(true);
@@ -12,7 +13,7 @@
 	const LANDING_BG = '/images/bkg_main.jpg';
 
 	let backgroundImage = $derived(
-		$page.url.pathname.startsWith('/quiz') ? getQuizBackgroundImage($quizCategory) : LANDING_BG
+		$page.url.pathname.startsWith('/quiz') ? getQuizBackgroundImage($selectedCategory) : LANDING_BG
 	);
 
 	onMount(async () => {

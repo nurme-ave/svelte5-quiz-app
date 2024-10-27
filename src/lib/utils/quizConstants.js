@@ -12,6 +12,16 @@ export const STAGGER_DELAY_CLASSES = [
 	'stagger-delay-5'
 ];
 
+export const BACKGROUND_IMAGES = {
+	film: '/images/bkg_film.jpg',
+	music: '/images/bkg_music.png',
+	sports: '/images/bkg_sports.jpg',
+	geography: '/images/bkg_geography.jpg',
+	history: '/images/bkg_history.jpg',
+	vehicles: '/images/bkg_vehicles.jpg',
+	default: '/images/bkg_main.jpg'
+};
+
 export const CATEGORY_MAPPING = {
 	film: 11,
 	music: 12,
@@ -19,13 +29,4 @@ export const CATEGORY_MAPPING = {
 	geography: 22,
 	history: 23,
 	vehicles: 28
-};
-
-export const BACKGROUND_IMAGES = {
-	film: '/images/bkg_film.jpg',
-	music: '/images/bkg_music.png',
-	sports: '/images/bkg_sports.jpg',
-	geography: '/images/bkg_geography.jpg',
-	history: '/images/bkg_history.jpg',
-	vehicles: '/images/bkg_vehicles.jpg'
 };
