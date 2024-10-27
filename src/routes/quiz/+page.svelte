@@ -22,6 +22,7 @@
 	} from '$lib/stores/quizStore';
 
 	let quizTimer; // Add reference to store the timer
+	let answerTimeout; // Track answer timeout
 
 	// Constants
 	const QUESTION_TIME_LIMIT = 15; // Seconds per question
@@ -46,7 +47,7 @@
 					...currentQ.incorrect_answers,
 					currentQ.correct_answer
 				]);
-				quizTimer = startQuizTimer(); // Store timer reference
+				quizTimer = startQuizTimer();
 			} else {
 				throw new Error('No questions available');
 			}
@@ -62,6 +63,9 @@
 	onDestroy(() => {
 		if (quizTimer) {
 			clearInterval(quizTimer);
+		}
+		if (answerTimeout) {
+			clearTimeout(answerTimeout);
 		}
 	});
 
@@ -108,17 +112,17 @@
 
 	// Processes user's answer
 	function handleQuizAnswer(answer) {
+		// Clear any existing timeout
+		if (answerTimeout) {
+			clearTimeout(answerTimeout);
+		}
+
 		$selectedAnswer = answer;
 		$isAnswerCorrect = answer === quizState.currentQuestion.correct_answer;
 		handleAnswer(answer);
 
-		// Use a reference for the timeout
-		const answerTimeout = setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
-
-		// Clean up on component destroy
-		onDestroy(() => {
-			clearTimeout(answerTimeout);
-		});
+		// Set new timeout and store reference
+		answerTimeout = setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
 	}
 
 	// Moves to next question or ends quiz

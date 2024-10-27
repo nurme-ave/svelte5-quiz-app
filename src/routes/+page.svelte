@@ -104,7 +104,7 @@
 
 <!-- Loading overlay -->
 {#if isLoading || isNavigating}
-	<div class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+	<div class="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
 		<div class="text-center">
 			<div class="text-2xl text-yellow-300 mb-6">{loadingProgress}</div>
 

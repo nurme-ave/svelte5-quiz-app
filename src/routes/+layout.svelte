@@ -2,13 +2,29 @@
 	import '../app.css';
 	import { page } from '$app/stores';
 	import { quizCategory, getQuizBackgroundImage } from '$lib/stores/quizStore';
+	import { preloadImage } from '$lib/utils/imagePreloader';
+	import { onMount } from 'svelte';
+
 	let { children } = $props();
+	let isInitialLoading = $state(true);
+	let backgroundLoaded = $state(false);
 
 	const LANDING_BG = '/images/bkg_main.jpg';
 
 	let backgroundImage = $derived(
 		$page.url.pathname.startsWith('/quiz') ? getQuizBackgroundImage($quizCategory) : LANDING_BG
 	);
+
+	onMount(async () => {
+		try {
+			// Preload the landing background
+			await preloadImage(LANDING_BG);
+			backgroundLoaded = true;
+		} finally {
+			// Even if image fails to load, we should show content
+			isInitialLoading = false;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -17,7 +33,32 @@
 	{/if}
 </svelte:head>
 
-<div class="background" style="background-image: url({backgroundImage});">
+{#if isInitialLoading}
+	<div class="fixed inset-0 bg-black flex items-center justify-center">
+		<div class="text-center">
+			<div class="flex items-center justify-center gap-3">
+				<div
+					class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+					style="animation-delay: 0s"
+				></div>
+				<div
+					class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+					style="animation-delay: 0.2s"
+				></div>
+				<div
+					class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+					style="animation-delay: 0.4s"
+				></div>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<div
+	class="background transition-opacity duration-500"
+	class:opacity-0={!backgroundLoaded}
+	style="background-image: url({backgroundImage});"
+>
 	<main
 		class="flex flex-col justify-start text-center gap-3 p-7 sm:p-14 md:p-16 lg:p-20 min-h-screen max-w-5xl mx-auto"
 	>
