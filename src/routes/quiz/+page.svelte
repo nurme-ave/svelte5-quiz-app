@@ -99,10 +99,19 @@
 
 	// Processes user's answer
 	function handleQuizAnswer(answer) {
-		if (answerTimeout) {
-			clearTimeout(answerTimeout);
+		// Clear the quiz timer (the countdown timer for questions)
+		if (quizTimer) {
+			clearInterval(quizTimer);
+			quizTimer = null;
 		}
 
+		// Clear any existing answer timeout
+		if (answerTimeout) {
+			clearTimeout(answerTimeout);
+			answerTimeout = null;
+		}
+
+		// Process the answer
 		const isCorrect = answer === $currentQuestion.correct_answer;
 
 		updateQuizState({
@@ -116,14 +125,26 @@
 
 	// Moves to next question or ends quiz
 	function advanceQuiz() {
+		if (answerTimeout) {
+			clearTimeout(answerTimeout);
+			answerTimeout = null;
+		}
+
 		if ($isQuizComplete) {
 			quizState.quizEnded = true;
+			if (quizTimer) {
+				clearInterval(quizTimer);
+				quizTimer = null;
+			}
 		} else {
 			updateQuizState({
 				selectedAnswer: null,
 				isAnswerCorrect: null,
 				currentQuestionIndex: $quizStore.currentQuestionIndex + 1
 			});
+
+			// Restart the timer for the next question
+			quizTimer = startQuizTimer();
 		}
 	}
 
