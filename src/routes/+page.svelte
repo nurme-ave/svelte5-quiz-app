@@ -24,6 +24,16 @@
 	let isNavigating = $state(false);
 	let countdownTimer;
 
+	export function load() {
+		return {
+			meta: {
+				title: 'Welcome to Quiz App',
+				description:
+					'A fun and interactive way to test your knowledge. Choose from multiple categories and challenge yourself!'
+			}
+		};
+	}
+
 	async function handleStartQuiz() {
 		if (!$canStartQuiz) {
 			alert('Please select a category, difficulty level, and number of questions.');

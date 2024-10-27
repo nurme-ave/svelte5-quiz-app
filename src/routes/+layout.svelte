@@ -5,13 +5,20 @@
 	import { getQuizBackgroundImage } from '$lib/utils/quizUtils';
 	import { quizStore } from '$lib/stores/quizStore';
 	import { preloadImage } from '$lib/utils/imagePreloader';
+	import { defaultMeta } from '$lib/meta';
 
-	let { children } = $props();
+	let { children, data } = $props();
 	let isInitialLoading = $state(true);
 	let backgroundLoaded = $state(false);
 	const currentYear = new Date().getFullYear();
 
 	const LANDING_BG = '/images/bkg_main.jpg';
+
+	// Combine default metadata with page-specific metadata, falling back to defaults if none provided
+	const meta = $derived({
+		...defaultMeta,
+		...(data?.meta || {})
+	});
 
 	let backgroundImage = $derived(
 		$page.url.pathname.startsWith('/quiz')
@@ -32,6 +39,8 @@
 </script>
 
 <svelte:head>
+	<title>{meta.title}</title>
+	<meta name="description" content={meta.description} />
 	{#if backgroundImage}
 		<link rel="preload" as="image" href={backgroundImage} />
 	{/if}

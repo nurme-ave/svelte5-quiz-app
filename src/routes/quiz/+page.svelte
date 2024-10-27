@@ -52,6 +52,29 @@
 		isInitializing: true
 	});
 
+	// Subscribe to the store
+	// Client-side metadata updates
+	$effect(() => {
+		if ($quizStore.selectedCategory) {
+			const category = $quizStore.selectedCategory;
+			const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+
+			document.title = `${formattedCategory} Quiz | Quiz App`;
+			document
+				.querySelector('meta[name="description"]')
+				.setAttribute(
+					'content',
+					`Test your knowledge in ${formattedCategory}. Take our interactive quiz and challenge yourself!`
+				);
+		} else {
+			// Reset to default when no category is selected
+			document.title = 'Quiz App - Built With Svelte';
+			document
+				.querySelector('meta[name="description"]')
+				.setAttribute('content', 'Test your knowledge with our interactive quiz application');
+		}
+	});
+
 	// Initialize quiz on mount
 	onMount(() => {
 		try {
