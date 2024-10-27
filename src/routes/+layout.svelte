@@ -9,6 +9,7 @@
 	let { children } = $props();
 	let isInitialLoading = $state(true);
 	let backgroundLoaded = $state(false);
+	const currentYear = new Date().getFullYear();
 
 	const LANDING_BG = '/images/bkg_main.jpg';
 
@@ -52,13 +53,18 @@
 {/if}
 
 <div
-	class="background transition-opacity duration-500"
+	class="background transition-opacity duration-500 relative"
 	class:opacity-0={!backgroundLoaded}
 	style="background-image: url({backgroundImage});"
 >
-	<main
-		class="flex flex-col justify-start text-center gap-3 py-10 px-7 sm:p-[4rem] md:p-[4.5rem] min-h-screen max-w-5xl mx-auto"
-	>
-		{@render children?.()}
-	</main>
+	<div class="min-h-screen">
+		<main
+			class="flex flex-col justify-start text-center gap-3 pt-10 pb-16 px-7 sm:p-[4rem] md:p-[4.5rem] max-w-5xl mx-auto"
+		>
+			{@render children?.()}
+		</main>
+		<footer class="absolute bottom-0 w-full text-center py-2">
+			<p class="text-white text-sm">&copy; {currentYear} | Ave Nurme | Built with SvelteKit</p>
+		</footer>
+	</div>
 </div>
