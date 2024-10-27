@@ -42,7 +42,7 @@ body {
 
 .fade-in-from-top.animate {
 	opacity: 0;
-	animation: fadeInFromTop 2.5s ease-out forwards;
+	animation: fadeInFromTop 1s ease-out forwards;
 	will-change: opacity;
 }
 
