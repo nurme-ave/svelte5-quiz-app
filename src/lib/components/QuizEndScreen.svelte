@@ -6,8 +6,8 @@
 	import { goto } from '$app/navigation';
 
 	// Quiz utilities and stores
-	import { resetQuiz, formatTime } from '$lib/utils/quizUtils';
-	import { questions, score } from '$lib/stores/quizStore';
+	import { quizStore, resetQuiz } from '$lib/stores/quizStore';
+	import { formatTime } from '$lib/utils/quizUtils';
 
 	// UI Component
 	import Button from './Button.svelte';
@@ -23,9 +23,6 @@
 		dispatch('restart'); // Notify parent component
 		goto('/'); // Navigate to home page
 	}
-
-	// Compute total questions once and update when $questions changes
-	let totalQuestions = $derived($questions.length);
 </script>
 
 <div class="text-white text-center md:w-[32rem] space-y-5">
@@ -33,7 +30,7 @@
 	<div class="md:text-lg space-y-2">
 		<i class="fa-solid fa-trophy fa-3x text-yellow-300 mb-4"></i>
 		<p>You've completed the quiz!</p>
-		<p>Your score: {$score} / {totalQuestions}</p>
+		<p>Your score: {$quizStore.score} / {$quizStore.questions.length}</p>
 		<p>Total time: {formatTime(totalTime)}</p>
 	</div>
 	<Button onclick={restartQuiz} variant="primary" customClass="w-44 text-lg font-semibold mx-auto">

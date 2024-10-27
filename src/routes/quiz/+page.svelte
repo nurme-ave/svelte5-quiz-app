@@ -13,12 +13,10 @@
 	import { ANSWER_DISPLAY_DURATION } from '$lib/utils/quizConstants';
 	import { handleAnswer, resetQuiz, shuffleArray, formatTime } from '$lib/utils/quizUtils';
 	import {
-		questions,
-		currentQuestionIndex,
-		score,
-		selectedAnswer,
-		isAnswerCorrect,
-		selectedCategory
+		quizStore,
+		updateQuizState,
+		currentQuestion,
+		isQuizComplete
 	} from '$lib/stores/quizStore';
 
 	let quizTimer; // Add reference to store the timer
@@ -31,7 +29,6 @@
 		loadError: false, // Tracks if there was an error loading questions
 		quizEnded: false, // Indicates if the quiz is complete
 		shuffledAnswers: [], // Randomized answer options
-		currentQuestion: null, // Current question being displayed
 		totalTime: 0, // Total time spent on quiz
 		questionTime: QUESTION_TIME_LIMIT, // Time remaining for current question
 		isInitializing: true
@@ -40,13 +37,8 @@
 	// Initialize quiz on mount
 	onMount(() => {
 		try {
-			if ($questions.length > 0) {
-				const currentQ = $questions[0];
-				quizState.currentQuestion = currentQ;
-				quizState.shuffledAnswers = shuffleArray([
-					...currentQ.incorrect_answers,
-					currentQ.correct_answer
-				]);
+			if ($quizStore.questions.length > 0) {
+				updateShuffledAnswers($currentQuestion);
 				quizTimer = startQuizTimer();
 			} else {
 				throw new Error('No questions available');
@@ -61,17 +53,13 @@
 
 	// Add cleanup
 	onDestroy(() => {
-		if (quizTimer) {
-			clearInterval(quizTimer);
-		}
-		if (answerTimeout) {
-			clearTimeout(answerTimeout);
-		}
+		if (quizTimer) clearInterval(quizTimer);
+		if (answerTimeout) clearTimeout(answerTimeout);
 	});
 
 	// Manages the timer during the quiz
 	function startQuizTimer() {
-		const timer = setInterval(() => {
+		return setInterval(() => {
 			if (!quizState.quizEnded) {
 				quizState.totalTime += 1;
 				quizState.questionTime -= 1;
@@ -80,31 +68,30 @@
 					handleTimeUp();
 				}
 			} else {
-				clearInterval(timer);
+				clearInterval(quizTimer);
 			}
 		}, 1000);
-
-		return timer; // Return timer reference
 	}
 
+	function updateShuffledAnswers(question) {
+		if (question) {
+			quizState.shuffledAnswers = shuffleArray([
+				...question.incorrect_answers,
+				question.correct_answer
+			]);
+		}
+	}
 	// Updates current question when question index changes
 	$effect(() => {
-		if ($questions.length > 0 && $currentQuestionIndex != null) {
-			const currentQ = $questions[$currentQuestionIndex];
-			if (currentQ) {
-				quizState.currentQuestion = currentQ;
-				quizState.shuffledAnswers = shuffleArray([
-					...currentQ.incorrect_answers,
-					currentQ.correct_answer
-				]);
-				quizState.questionTime = QUESTION_TIME_LIMIT;
-			}
+		if ($currentQuestion && $quizStore.selectedAnswer === null) {
+			updateShuffledAnswers($currentQuestion);
+			quizState.questionTime = QUESTION_TIME_LIMIT;
 		}
 	});
 
 	// Handles when time runs out for a question
 	function handleTimeUp() {
-		if ($selectedAnswer === null) {
+		if (!$quizStore.selectedAnswer) {
 			handleAnswer(null);
 		}
 		advanceQuiz();
@@ -112,27 +99,31 @@
 
 	// Processes user's answer
 	function handleQuizAnswer(answer) {
-		// Clear any existing timeout
 		if (answerTimeout) {
 			clearTimeout(answerTimeout);
 		}
 
-		$selectedAnswer = answer;
-		$isAnswerCorrect = answer === quizState.currentQuestion.correct_answer;
-		handleAnswer(answer);
+		const isCorrect = answer === $currentQuestion.correct_answer;
 
-		// Set new timeout and store reference
+		updateQuizState({
+			selectedAnswer: answer,
+			isAnswerCorrect: isCorrect,
+			score: isCorrect ? $quizStore.score + 1 : $quizStore.score
+		});
+
 		answerTimeout = setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
 	}
 
 	// Moves to next question or ends quiz
 	function advanceQuiz() {
-		if ($currentQuestionIndex >= $questions.length - 1) {
+		if ($isQuizComplete) {
 			quizState.quizEnded = true;
 		} else {
-			$selectedAnswer = null;
-			$isAnswerCorrect = null;
-			currentQuestionIndex.update((n) => n + 1);
+			updateQuizState({
+				selectedAnswer: null,
+				isAnswerCorrect: null,
+				currentQuestionIndex: $quizStore.currentQuestionIndex + 1
+			});
 		}
 	}
 
@@ -151,7 +142,7 @@
 
 <div class="mx-auto text-white max-w-lg w-full">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4 text-yellow-300">
-		{formatCategoryName($selectedCategory)} Quiz
+		{formatCategoryName($quizStore.selectedCategory)} Quiz
 	</h1>
 
 	{#if quizState.isInitializing}
@@ -171,24 +162,24 @@
 		<div class="space-y-4">
 			<QuizEndScreen onrestart={restartQuiz} totalTime={quizState.totalTime} />
 		</div>
-	{:else if quizState.currentQuestion && $questions.length > 0}
+	{:else if $currentQuestion && $quizStore.questions.length > 0}
 		<div class="flex justify-between items-center mb-6 text-base">
-			<h2>Question {$currentQuestionIndex + 1} of {$questions.length}</h2>
+			<h2>Question {$quizStore.currentQuestionIndex + 1} of {$quizStore.questions.length}</h2>
 			<p>Total Time: {formatTime(quizState.totalTime)}</p>
 		</div>
 
 		<QuizTimer timeLimit={QUESTION_TIME_LIMIT} currentTime={quizState.questionTime} />
 
 		<QuizQuestion
-			question={quizState.currentQuestion.question}
+			question={$currentQuestion.question}
 			shuffledAnswers={quizState.shuffledAnswers}
-			selectedAnswer={$selectedAnswer}
-			isAnswerCorrect={$isAnswerCorrect}
+			selectedAnswer={$quizStore.selectedAnswer}
+			isAnswerCorrect={$quizStore.isAnswerCorrect}
 			onAnswerSelect={handleQuizAnswer}
 		/>
 
 		<div class="mt-8 flex flex-col gap-4">
-			<p>Score: {$score} / {$questions.length}</p>
+			<p>Score: {$quizStore.score} / {$quizStore.questions.length}</p>
 			<Button
 				onclick={restartQuiz}
 				variant="primary"

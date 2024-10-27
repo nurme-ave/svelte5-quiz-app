@@ -1,21 +1,17 @@
 <script>
-	let {
-		question,
-		shuffledAnswers = [],
-		selectedAnswer = null,
-		isAnswerCorrect = false,
-		onAnswerSelect = () => {}
-	} = $props();
+	import { quizStore, updateQuizState } from '$lib/stores/quizStore';
+
+	let { question, shuffledAnswers = [], onAnswerSelect = () => {} } = $props();
 
 	function getAnswerButtonClasses(answer) {
 		const baseClasses = 'w-full px-2 py-3 rounded-md transition-colors duration-200';
 
-		if (!selectedAnswer) {
+		if (!$quizStore.selectedAnswer) {
 			return `${baseClasses} bg-white text-black hover:bg-blue-500 hover:text-white`;
 		}
 
-		if (selectedAnswer === answer) {
-			return isAnswerCorrect
+		if ($quizStore.selectedAnswer === answer) {
+			return $quizStore.isAnswerCorrect
 				? `${baseClasses} bg-green-500 text-white`
 				: `${baseClasses} bg-red-500 text-white`;
 		}
@@ -34,8 +30,10 @@
 		{#each shuffledAnswers as answer (answer)}
 			<button
 				class={getAnswerButtonClasses(answer)}
-				disabled={selectedAnswer !== null}
+				disabled={$quizStore.selectedAnswer !== null}
 				onclick={() => onAnswerSelect(answer)}
+				aria-pressed={$quizStore.selectedAnswer === answer}
+				aria-disabled={$quizStore.selectedAnswer !== null}
 			>
 				{@html answer}
 			</button>

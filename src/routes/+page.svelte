@@ -14,19 +14,9 @@
 		STAGGER_DELAY_CLASSES
 	} from '$lib/utils/quizConstants';
 
-	import {
-		resetQuiz,
-		selectCategory,
-		selectDifficulty,
-		selectQuestionCount,
-		startQuiz
-	} from '$lib/utils/quizUtils';
+	import { startQuiz, resetQuiz } from '$lib/utils/quizUtils';
 
-	import {
-		selectedCategory,
-		selectedDifficulty,
-		selectedQuestionCount
-	} from '$lib/stores/quizStore';
+	import { quizStore, updateQuizState, canStartQuiz } from '$lib/stores/quizStore';
 
 	let isLoading = $state(false);
 	let loadingProgress = $state('');
@@ -35,7 +25,7 @@
 	let countdownTimer;
 
 	async function handleStartQuiz() {
-		if (!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount) {
+		if (!$canStartQuiz) {
 			alert('Please select a category, difficulty level, and number of questions.');
 			return;
 		}
@@ -44,9 +34,9 @@
 			isLoading = true;
 
 			const { path, loadingPromise } = await startQuiz(
-				$selectedCategory,
-				$selectedDifficulty,
-				$selectedQuestionCount
+				$quizStore.selectedCategory,
+				$quizStore.selectedDifficulty,
+				$quizStore.selectedQuestionCount
 			);
 
 			loadingProgress = 'Preparing quiz...';
@@ -112,18 +102,12 @@
 				</div>
 			{:else}
 				<div class="flex items-center justify-center gap-3">
-					<div
-						class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
-						style="animation-delay: 0s"
-					></div>
-					<div
-						class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
-						style="animation-delay: 0.2s"
-					></div>
-					<div
-						class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
-						style="animation-delay: 0.4s"
-					></div>
+					{#each [0, 0.2, 0.4] as delay, i}
+						<div
+							class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+							style="animation-delay: {delay}s"
+						></div>
+					{/each}
 				</div>
 			{/if}
 		</div>
@@ -152,8 +136,8 @@
 			{#each QUIZ_CATEGORIES as category, i}
 				<div class="animate stagger-fade-in {STAGGER_DELAY_CLASSES[i]}">
 					<Button
-						onclick={() => selectCategory(selectedCategory, category)}
-						selected={$selectedCategory === category.toLowerCase()}
+						onclick={() => updateQuizState({ selectedCategory: category.toLowerCase() })}
+						selected={$quizStore.selectedCategory === category.toLowerCase()}
 						fullWidth
 					>
 						{category}
@@ -168,8 +152,8 @@
 				<div class="space-x-2">
 					{#each QUIZ_DIFFICULTIES as difficulty}
 						<Button
-							onclick={() => selectDifficulty(selectedDifficulty, difficulty)}
-							selected={$selectedDifficulty === difficulty.toLowerCase()}
+							onclick={() => updateQuizState({ selectedDifficulty: difficulty.toLowerCase() })}
+							selected={$quizStore.selectedDifficulty === difficulty.toLowerCase()}
 						>
 							{difficulty}
 						</Button>
@@ -182,8 +166,8 @@
 				<div class="space-x-2">
 					{#each QUIZ_QUESTION_COUNTS as count}
 						<Button
-							onclick={() => selectQuestionCount(selectedQuestionCount, count)}
-							selected={$selectedQuestionCount === count}
+							onclick={() => updateQuizState({ selectedQuestionCount: count })}
+							selected={$quizStore.selectedQuestionCount === count}
 						>
 							{count}
 						</Button>
@@ -194,7 +178,7 @@
 
 		<Button
 			onclick={handleStartQuiz}
-			disabled={!$selectedCategory || !$selectedDifficulty || !$selectedQuestionCount || isLoading}
+			disabled={!$canStartQuiz || isLoading}
 			variant="primary"
 			customClass="w-36 text-lg font-semibold mx-auto fade-in-from-top delay-3 mt-7"
 		>
