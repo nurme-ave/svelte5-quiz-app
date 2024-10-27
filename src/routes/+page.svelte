@@ -94,10 +94,10 @@
 {#if isLoading || isNavigating}
 	<div class="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
 		<div class="text-center">
-			<div class="text-2xl text-yellow-300 mb-6">{loadingProgress}</div>
+			<div class="text-2xl text-white mb-6">{loadingProgress}</div>
 
 			{#if loadingProgress === 'Get Ready!'}
-				<div class="text-6xl font-bold text-yellow-300 animate-bounce">
+				<div class="text-6xl font-bold text-white animate-bounce">
 					{countdown}
 				</div>
 			{:else}

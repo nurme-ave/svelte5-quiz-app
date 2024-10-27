@@ -25,7 +25,7 @@
 	}
 </script>
 
-<div class="text-white text-center md:w-[32rem] space-y-5">
+<div class="text-white text-center md:w-[32rem] space-y-5 animate fade-in-from-top">
 	<h1 class="text-2xl md:text-3xl font-bold mb-4">Congratulations!</h1>
 	<div class="md:text-lg space-y-2">
 		<i class="fa-solid fa-trophy fa-3x text-yellow-300 mb-4"></i>
