@@ -59,7 +59,7 @@
 >
 	<div class="min-h-screen">
 		<main
-			class="flex flex-col justify-start text-center gap-3 pt-10 pb-16 px-7 sm:p-[4rem] md:p-[4.5rem] max-w-5xl mx-auto"
+			class="flex flex-col justify-start text-center gap-3 pt-10 pb-16 px-7 lg:py-10 max-w-5xl mx-auto"
 		>
 			{@render children?.()}
 		</main>
