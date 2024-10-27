@@ -97,7 +97,7 @@
 			<div class="text-2xl text-white mb-6">{loadingProgress}</div>
 
 			{#if loadingProgress === 'Get Ready!'}
-				<div class="text-6xl font-bold text-white animate-bounce">
+				<div class="text-6xl font-bold text-yellow-300 animate-bounce">
 					{countdown}
 				</div>
 			{:else}
