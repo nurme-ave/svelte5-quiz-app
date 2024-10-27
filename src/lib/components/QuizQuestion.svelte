@@ -1,5 +1,5 @@
 <script>
-	import { quizStore, updateQuizState } from '$lib/stores/quizStore';
+	import { quizStore } from '$lib/stores/quizStore';
 
 	let { question, shuffledAnswers = [], onAnswerSelect = () => {} } = $props();
 
