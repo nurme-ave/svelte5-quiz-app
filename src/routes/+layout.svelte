@@ -67,7 +67,7 @@
 	style="background-image: url({backgroundImage});"
 >
 	<main
-		class="flex-1 flex flex-col justify-start text-center gap-3 pt-10 pb-0 px-7 lg:pt-14 2xl:pt-18 3xl:pt-24 md:max-w-2xl lg:max-w-5xl mx-auto"
+		class="flex-1 flex flex-col justify-start text-center gap-3 pt-10 pb-0 px-7 lg:pt-14 2xl:pt-18 3xl:pt-24 max-w-5xl mx-auto"
 	>
 		{@render children?.()}
 	</main>
