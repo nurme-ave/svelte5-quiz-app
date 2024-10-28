@@ -68,12 +68,19 @@
 >
 	<div class="min-h-screen">
 		<main
-			class="flex flex-col justify-start text-center gap-3 pt-10 pb-0 px-7 lg:pt-14 2xl:pt-18 3xl:pt-24 max-w-5xl mx-auto"
+			class="flex flex-col justify-start text-center gap-3 pt-10 pb-0 px-7 lg:pt-14 2xl:pt-18 3xl:pt-24 md:max-w-2xl lg:max-w-5xl mx-auto"
 		>
 			{@render children?.()}
 		</main>
 		<footer class="absolute bottom-0 w-full text-center py-2">
-			<p class="text-white text-sm">&copy; {currentYear} | Ave Nurme | Built with SvelteKit</p>
+			<p class="text-white text-sm">
+				&copy; {currentYear} |
+				<a
+					href="https://www.avenurme.dev"
+					target="_blank"
+					class="text-yellow-300 hover:text-blue-400">Ave Nurme</a
+				> | Built with SvelteKit
+			</p>
 		</footer>
 	</div>
 </div>
