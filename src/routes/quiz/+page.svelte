@@ -1,7 +1,7 @@
 <script>
 	// SvelteKit specific imports
 	import { goto } from '$app/navigation'; // For navigation
-	import { onMount, onDestroy } from 'svelte'; // Lifecycle hook
+	import { onMount } from 'svelte'; // Lifecycle hook
 
 	// UI Component imports
 	import Button from '$lib/components/Button.svelte';
@@ -19,41 +19,31 @@
 		isQuizComplete
 	} from '$lib/stores/quizStore';
 
-	let quizTimer; // Add reference to store the timer
-	let answerTimeout; // Track answer timeout
+	// Store references and constants
+	let gameTimer; // Reference to the main interval timer for quiz timing
 
 	// Constants
-	const QUESTION_TIME_LIMIT = 15; // Seconds per question
+	const QUESTION_TIME_LIMIT = 15; // Seconds allowed per quiz question
 
-	// Helper function #1 for cleanup
-	// Full timer cleanup (clear interval and nullify reference)
-	function clearQuizTimer() {
-		if (quizTimer) {
-			clearInterval(quizTimer);
-			quizTimer = null;
-		}
-	}
+	// Consolidated states for better organization and maintenance
 
-	// Helper function #2 for cleanup
-	// Full timeout cleanup (clear timeout and nullify reference)
-	function clearAnswerTimeout() {
-		if (answerTimeout) {
-			clearTimeout(answerTimeout);
-			answerTimeout = null;
-		}
-	}
-
+	// Quiz-related state - handles UI flow and answer management
 	let quizState = $state({
-		loadError: false, // Tracks if there was an error loading questions
-		quizEnded: false, // Indicates if the quiz is complete
-		shuffledAnswers: [], // Randomized answer options
-		totalTime: 0, // Total time spent on quiz
-		questionTime: QUESTION_TIME_LIMIT, // Time remaining for current question
-		isInitializing: true
+		loadError: false, // Tracks API or data loading failures
+		quizEnded: false, // Indicates quiz completion status
+		shuffledAnswers: [], // Randomized answer options for current question
+		isInitializing: true // Controls initial loading state
 	});
 
-	// Subscribe to the store
-	// Client-side metadata updates
+	// Timer-related state - manages all timing concerns
+	let timerState = $state({
+		totalTime: 0, // Total elapsed quiz time in seconds
+		questionTime: QUESTION_TIME_LIMIT, // Countdown timer for current question
+		lastTick: 0 // Timestamp for drift prevention
+	});
+
+	// Updates document title and meta description based on selected quiz category
+	// Improves SEO and user experience with dynamic metadata
 	$effect(() => {
 		if ($quizStore.selectedCategory) {
 			const category = $quizStore.selectedCategory;
@@ -75,12 +65,45 @@
 		}
 	});
 
-	// Initialize quiz on mount
+	// Timer management effect with drift prevention
+	// Uses performance.now() to ensure accurate timing even with browser throttling
+	// Automatically cleans up on component unmount or when dependencies change
+	$effect(() => {
+		if (!quizState.quizEnded && !quizState.isInitializing && !quizState.loadError) {
+			gameTimer = setInterval(() => {
+				const now = performance.now();
+
+				// Only update if enough time has passed (helps prevent drift)
+				if (now - timerState.lastTick >= 1000) {
+					timerState.totalTime += 1;
+					timerState.questionTime -= 1;
+					timerState.lastTick = now;
+
+					if (timerState.questionTime === 0) {
+						handleTimeUp();
+					}
+				}
+			}, 1000);
+
+			// This cleanup runs automatically:
+			// - When component unmounts
+			// - When dependencies change and effect re-runs
+			return () => {
+				if (gameTimer) {
+					clearInterval(gameTimer);
+					gameTimer = null;
+				}
+			};
+		}
+	});
+
+	// Initialize quiz data and state
+	// Sets up initial question data and timing mechanism
 	onMount(() => {
 		try {
 			if ($quizStore.questions.length > 0) {
 				updateShuffledAnswers($currentQuestion);
-				quizTimer = startQuizTimer();
+				timerState.lastTick = performance.now(); // Initialize lastTick
 			} else {
 				throw new Error('No questions available');
 			}
@@ -92,30 +115,9 @@
 		}
 	});
 
-	// Add cleanup
-	onDestroy(() => {
-		clearQuizTimer();
-		clearAnswerTimeout();
-	});
+	// Helper Functions
 
-	// Manages the timer during the quiz
-	function startQuizTimer() {
-		clearQuizTimer(); // Full cleanup of any existing timer before starting new one
-
-		return setInterval(() => {
-			if (!quizState.quizEnded) {
-				quizState.totalTime += 1;
-				quizState.questionTime -= 1;
-
-				if (quizState.questionTime === 0) {
-					handleTimeUp();
-				}
-			} else {
-				clearInterval(quizTimer); // Simple interval clear is sufficient here
-			}
-		}, 1000);
-	}
-
+	// Updates the shuffled answers array for a given question
 	function updateShuffledAnswers(question) {
 		if (question) {
 			quizState.shuffledAnswers = shuffleArray([
@@ -124,29 +126,31 @@
 			]);
 		}
 	}
-	// Updates current question when question index changes
+
+	// Reactive Updates
+
+	// Handles question transitions and resets timer for new questions
 	$effect(() => {
 		if ($currentQuestion && $quizStore.selectedAnswer === null) {
 			updateShuffledAnswers($currentQuestion);
-			quizState.questionTime = QUESTION_TIME_LIMIT;
+			timerState.questionTime = QUESTION_TIME_LIMIT;
 		}
 	});
 
-	// Handles when time runs out for a question
-	function handleTimeUp() {
-		clearQuizTimer();
+	// Quiz Flow Functions
 
+	// Handles timer expiration for current question
+	// Processes as incorrect answer if no selection made
+	function handleTimeUp() {
 		if (!$quizStore.selectedAnswer) {
 			handleAnswer(null);
 		}
 		advanceQuiz();
 	}
 
-	// Processes user's answer
+	// Processes user's answer selection
+	// Updates score and triggers question transition after display duration
 	function handleQuizAnswer(answer) {
-		clearQuizTimer();
-		clearAnswerTimeout();
-
 		// Process the answer
 		const isCorrect = answer === $currentQuestion.correct_answer;
 
@@ -156,14 +160,13 @@
 			score: isCorrect ? $quizStore.score + 1 : $quizStore.score
 		});
 
-		answerTimeout = setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
+		// Using regular setTimeout instead of $effect
+		setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
 	}
 
-	// Moves to next question or ends quiz
+	// Advances quiz to next question or ends quiz if complete
+	// Resets question timer and updates quiz state
 	function advanceQuiz() {
-		clearAnswerTimeout();
-		clearQuizTimer();
-
 		if ($isQuizComplete) {
 			quizState.quizEnded = true;
 		} else {
@@ -173,20 +176,21 @@
 				currentQuestionIndex: $quizStore.currentQuestionIndex + 1
 			});
 
-			// Reset question time before starting new timer
-			quizState.questionTime = QUESTION_TIME_LIMIT;
-			// Start new timer
-			quizTimer = startQuizTimer();
+			// Reset question time for the new question
+			timerState.questionTime = QUESTION_TIME_LIMIT;
 		}
 	}
 
-	// Resets quiz and navigates to home
+	// Navigation and Utility Functions
+
+	// Resets quiz state and redirects to home page
+	// Used for both manual restarts and quiz completion
 	function restartQuiz() {
 		resetQuiz();
 		goto('/');
 	}
 
-	// Formats category name with capitalized first letter
+	// Formats category name for display
 	function formatCategoryName(category) {
 		if (!category) return 'Quiz';
 		return category.charAt(0).toUpperCase() + category.slice(1);
@@ -213,15 +217,15 @@
 		</div>
 	{:else if quizState.quizEnded}
 		<div class="space-y-4">
-			<QuizEndScreen onrestart={restartQuiz} totalTime={quizState.totalTime} />
+			<QuizEndScreen onrestart={restartQuiz} totalTime={timerState.totalTime} />
 		</div>
 	{:else if $currentQuestion && $quizStore.questions.length > 0}
 		<div class="flex justify-between items-center mb-6 text-base">
 			<h2>Question {$quizStore.currentQuestionIndex + 1} of {$quizStore.questions.length}</h2>
-			<p>Total Time: {formatTime(quizState.totalTime)}</p>
+			<p>Total Time: {formatTime(timerState.totalTime)}</p>
 		</div>
 
-		<QuizTimer timeLimit={QUESTION_TIME_LIMIT} currentTime={quizState.questionTime} />
+		<QuizTimer timeLimit={QUESTION_TIME_LIMIT} currentTime={timerState.questionTime} />
 
 		<QuizQuestion
 			question={$currentQuestion.question}
