@@ -164,6 +164,7 @@
 						<Button
 							onclick={() => updateQuizState({ selectedDifficulty: difficulty.toLowerCase() })}
 							selected={$quizStore.selectedDifficulty === difficulty.toLowerCase()}
+							customClass="sm:w-28"
 						>
 							{difficulty}
 						</Button>
@@ -178,6 +179,7 @@
 						<Button
 							onclick={() => updateQuizState({ selectedQuestionCount: count })}
 							selected={$quizStore.selectedQuestionCount === count}
+							customClass="sm:w-16"
 						>
 							{count}
 						</Button>
