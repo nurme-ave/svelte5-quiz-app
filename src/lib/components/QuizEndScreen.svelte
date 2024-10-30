@@ -7,13 +7,9 @@
 
 	// Quiz utilities and stores
 	import { quizStore, resetQuiz } from '$lib/stores/quizStore';
-	import { formatTime } from '$lib/utils/quizUtils';
 
 	// UI Component
 	import Button from './Button.svelte';
-
-	// Add totalTime as a prop
-	const { totalTime } = $props(); // Receives the prop value reactively
 
 	// Creates a dispatcher to send events up to parent components, allowing child-to-parent communication
 	const dispatch = createEventDispatcher();
@@ -31,7 +27,6 @@
 		<i class="fa-solid fa-trophy fa-3x text-yellow-300 mb-4"></i>
 		<p>You've completed the quiz!</p>
 		<p>Your score: {$quizStore.score} / {$quizStore.questions.length}</p>
-		<p>Total time: {formatTime(totalTime)}</p>
 	</div>
 	<Button onclick={restartQuiz} variant="primary" customClass="w-44 text-lg font-semibold mx-auto">
 		Start New Quiz
