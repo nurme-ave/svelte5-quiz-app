@@ -22,7 +22,7 @@
 	// Store references and constants
 	let gameTimer; // Reference to the main interval timer for quiz timing
 
-// Constants
+	// Constants
 	const QUESTION_TIME_LIMIT = 15; // Seconds allowed per quiz question
 
 	// Consolidated states for better organization and maintenance
@@ -33,7 +33,7 @@
 		quizEnded: false, // Indicates quiz completion status
 		shuffledAnswers: [], // Randomized answer options for current question
 		isInitializing: true, // Controls initial loading state
-		questionTime: QUESTION_TIME_LIMIT, // Countdown timer value for current question (in seconds)
+		questionTime: QUESTION_TIME_LIMIT // Countdown timer value for current question (in seconds)
 	});
 
 	// Start timer function
@@ -149,7 +149,7 @@
 			clearInterval(gameTimer);
 			gameTimer = null;
 		}
-	// Process the answer
+		// Process the answer
 		const isCorrect = answer === $currentQuestion.correct_answer;
 
 		updateQuizState({
@@ -161,7 +161,7 @@
 		// Using regular setTimeout instead of $effect
 		setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
 	}
-	
+
 	// Advances quiz to next question or ends quiz if complete
 	// Resets question timer and updates quiz state
 	function advanceQuiz() {
@@ -214,8 +214,8 @@
 		</div>
 	{:else if $currentQuestion && $quizStore.questions.length > 0}
 		<div class="flex justify-between items-center mb-6 text-base">
-			<h2>Question {$quizStore.currentQuestionIndex + 1} of {$quizStore.questions.length}</h2>
-			<p>Time remaining: {quizState.questionTime} seconds</p>
+			<h2>Question {$quizStore.currentQuestionIndex + 1} / {$quizStore.questions.length}</h2>
+			<p>Time left: {quizState.questionTime} seconds</p>
 		</div>
 
 		<QuizTimer timeLimit={QUESTION_TIME_LIMIT} currentTime={quizState.questionTime} />
