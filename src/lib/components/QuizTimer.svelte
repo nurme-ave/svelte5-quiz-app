@@ -4,8 +4,8 @@
 	let progressPercentage = $derived((currentTime / timeLimit) * 100);
 
 	function getProgressBarColor(percentage) {
-		if (percentage <= 25) return 'bg-red-500';
-		if (percentage <= 60) return 'bg-yellow-500';
+		if (percentage <= 33.34) return 'bg-red-500';
+		if (percentage <= 66.66) return 'bg-yellow-500';
 		return 'bg-green-500';
 	}
 </script>
