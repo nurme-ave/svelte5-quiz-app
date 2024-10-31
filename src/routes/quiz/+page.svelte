@@ -184,12 +184,6 @@
 		if (!category) return 'Quiz';
 		return category.charAt(0).toUpperCase() + category.slice(1);
 	}
-
-	// Ensures seconds are displayed with two digits (01-15)
-	// Adds a leading zero to single-digit seconds (e.g., 9 becomes "09")
-	function formatSeconds(seconds) {
-		return seconds.toString().padStart(2, '0');
-	}
 </script>
 
 <div class="mx-auto text-white max-w-lg w-full">
@@ -223,7 +217,7 @@
 			</h2>
 			<p>
 				Time remaining:
-				<span class="inline-flex w-7 justify-end"> {formatSeconds(quizState.questionTime)}s</span>
+				<span class="inline-flex w-7 justify-end"> {quizState.questionTime}s</span>
 			</p>
 		</div>
 
