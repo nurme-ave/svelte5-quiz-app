@@ -20,12 +20,8 @@
 	} from '$lib/stores/quizStore';
 
 	// Store references and constants
-	let gameTimer; // Reference to the main interval timer for quiz timing
-
-	// Constants
 	const QUESTION_TIME_LIMIT = 15; // Seconds allowed per quiz question
-
-	// Consolidated states for better organization and maintenance
+	let gameTimer; // Reference to the main interval timer for quiz timing
 
 	// Quiz-related state - handles UI flow and answer management
 	let quizState = $state({
@@ -36,26 +32,22 @@
 		questionTime: QUESTION_TIME_LIMIT // Countdown timer value for current question (in seconds)
 	});
 
-	// Start timer function
-	function startTimer() {
-		// Clear any existing timer first
-		if (gameTimer) {
-			clearInterval(gameTimer);
-		}
-
-		// Reset question time
-		quizState.questionTime = QUESTION_TIME_LIMIT;
-
-		// Start new timer
-		gameTimer = setInterval(() => {
-			quizState.questionTime -= 1;
-
-			if (quizState.questionTime === 0) {
-				clearInterval(gameTimer);
-				handleTimeUp();
+	// Initialize quiz data and state
+	// Sets up initial question data and timing mechanism
+	onMount(() => {
+		try {
+			if ($quizStore.questions.length > 0) {
+				updateShuffledAnswers($currentQuestion);
+			} else {
+				throw new Error('No questions available');
 			}
-		}, 1000);
-	}
+		} catch (error) {
+			console.error('Failed to initialize quiz:', error);
+			quizState.loadError = true;
+		} finally {
+			quizState.isInitializing = false;
+		}
+	});
 
 	// Timer management effect
 	$effect(() => {
@@ -63,7 +55,7 @@
 			!quizState.quizEnded &&
 			!quizState.isInitializing &&
 			!quizState.loadError &&
-			$quizStore.selectedAnswer === null
+			$quizStore.selectedAnswer === null //  the user hasn't answered the current question yet
 		) {
 			startTimer();
 
@@ -73,6 +65,13 @@
 					gameTimer = null;
 				}
 			};
+		}
+	});
+
+	// Handles question transitions and resets timer for new questions
+	$effect(() => {
+		if ($currentQuestion && $quizStore.selectedAnswer === null) {
+			updateShuffledAnswers($currentQuestion);
 		}
 	});
 
@@ -98,39 +97,26 @@
 		}
 	});
 
-	// Initialize quiz data and state
-	// Sets up initial question data and timing mechanism
-	onMount(() => {
-		try {
-			if ($quizStore.questions.length > 0) {
-				updateShuffledAnswers($currentQuestion);
-			} else {
-				throw new Error('No questions available');
+	// Start timer function
+	function startTimer() {
+		// Clear any existing timer first
+		if (gameTimer) {
+			clearInterval(gameTimer);
+		}
+
+		// Reset question time
+		quizState.questionTime = QUESTION_TIME_LIMIT;
+
+		// Start new timer
+		gameTimer = setInterval(() => {
+			quizState.questionTime -= 1;
+
+			if (quizState.questionTime === 0) {
+				clearInterval(gameTimer);
+				handleTimeUp();
 			}
-		} catch (error) {
-			console.error('Failed to initialize quiz:', error);
-			quizState.loadError = true;
-		} finally {
-			quizState.isInitializing = false;
-		}
-	});
-
-	// Updates the shuffled answers array for a given question
-	function updateShuffledAnswers(question) {
-		if (question) {
-			quizState.shuffledAnswers = shuffleArray([
-				...question.incorrect_answers,
-				question.correct_answer
-			]);
-		}
+		}, 1000);
 	}
-
-	// Handles question transitions and resets timer for new questions
-	$effect(() => {
-		if ($currentQuestion && $quizStore.selectedAnswer === null) {
-			updateShuffledAnswers($currentQuestion);
-		}
-	});
 
 	// Handles timer expiration for current question
 	// Processes as incorrect answer if no selection made
@@ -158,7 +144,7 @@
 			score: isCorrect ? $quizStore.score + 1 : $quizStore.score
 		});
 
-		// Using regular setTimeout instead of $effect
+		// setTimeout() runs once -> advanceQuiz gets called
 		setTimeout(advanceQuiz, ANSWER_DISPLAY_DURATION);
 	}
 
@@ -176,6 +162,16 @@
 		}
 	}
 
+	// Updates the shuffled answers array for a given question
+	function updateShuffledAnswers(question) {
+		if (question) {
+			quizState.shuffledAnswers = shuffleArray([
+				...question.incorrect_answers,
+				question.correct_answer
+			]);
+		}
+	}
+
 	// Resets quiz state and redirects to home page
 	// Used for both manual restarts and quiz completion
 	function restartQuiz() {
@@ -187,6 +183,12 @@
 	function formatCategoryName(category) {
 		if (!category) return 'Quiz';
 		return category.charAt(0).toUpperCase() + category.slice(1);
+	}
+
+	// Ensures seconds are displayed with two digits (01-15)
+	// Adds a leading zero to single-digit seconds (e.g., 9 becomes "09")
+	function formatSeconds(seconds) {
+		return seconds.toString().padStart(2, '0');
 	}
 </script>
 
@@ -215,7 +217,10 @@
 	{:else if $currentQuestion && $quizStore.questions.length > 0}
 		<div class="flex justify-between items-center mb-6 text-base">
 			<h2>Question {$quizStore.currentQuestionIndex + 1} / {$quizStore.questions.length}</h2>
-			<p>Time left: {quizState.questionTime} seconds</p>
+			<p>
+				Time remaining:
+				<span class="inline-flex w-7 justify-end"> {formatSeconds(quizState.questionTime)}s</span>
+			</p>
 		</div>
 
 		<QuizTimer timeLimit={QUESTION_TIME_LIMIT} currentTime={quizState.questionTime} />
