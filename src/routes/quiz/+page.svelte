@@ -216,7 +216,11 @@
 		</div>
 	{:else if $currentQuestion && $quizStore.questions.length > 0}
 		<div class="flex justify-between items-center mb-6 text-base">
-			<h2>Question {$quizStore.currentQuestionIndex + 1} / {$quizStore.questions.length}</h2>
+			<h2>
+				Question: <span class="inline-flex w-12 justify-end"
+					>{$quizStore.currentQuestionIndex + 1} / {$quizStore.questions.length}</span
+				>
+			</h2>
 			<p>
 				Time remaining:
 				<span class="inline-flex w-7 justify-end"> {formatSeconds(quizState.questionTime)}s</span>
@@ -234,7 +238,12 @@
 		/>
 
 		<div class="mt-8 flex flex-col gap-4">
-			<p>Score: {$quizStore.score} / {$quizStore.questions.length}</p>
+			<p>
+				Score: <span class="inline-flex w-4 justify-end">{$quizStore.score}</span> /
+				<span class="inline-flex {$quizStore.questions.length >= 10 ? 'w-4' : 'w-3'} justify-end">
+					{$quizStore.questions.length}
+				</span>
+			</p>
 			<Button
 				onclick={restartQuiz}
 				variant="primary"
