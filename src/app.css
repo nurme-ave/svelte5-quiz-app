@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: black;
+}
+
+.background {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  opacity: 1;
+}
+
+.background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  z-index: 1;
+}
+
+.background > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes fadeInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-from-top.animate {
+  opacity: 0;
+  animation: fadeInFromTop 1s ease-out forwards;
+  will-change: opacity;
+}
+
+.animate.delay-1 {
+  animation-delay: 0.25s;
+}
+
+.animate.delay-2 {
+  animation-delay: 0.5s;
+}
+
+.animate.delay-3 {
+  animation-delay: 0.75s;
+}
+
+.animate.delay-4 {
+  animation-delay: 3s;
+}
+
+.balanced-text {
+  text-wrap: balance;
+}
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-fade-in.animate {
+  opacity: 0;
+  animation: staggerFadeIn 0.75s ease forwards;
+}
+
+.animate.stagger-delay-0 {
+  animation-delay: 0s;
+}
+.animate.stagger-delay-1 {
+  animation-delay: 0.1s;
+}
+.animate.stagger-delay-2 {
+  animation-delay: 0.2s;
+}
+.animate.stagger-delay-3 {
+  animation-delay: 0.3s;
+}
+.animate.stagger-delay-4 {
+  animation-delay: 0.4s;
+}
+.animate.stagger-delay-5 {
+  animation-delay: 0.5s;
+}
