@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       screens: {
-        xsm: '400px',
+        'xsm': '400px',
         '3xl': '1920px'
       }
     }
