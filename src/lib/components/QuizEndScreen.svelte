@@ -21,10 +21,10 @@
   }
 </script>
 
-<div class="text-white text-center md:w-[32rem] space-y-5 animate fade-in-from-top">
-  <h1 class="text-2xl md:text-3xl font-bold mb-4">Congratulations!</h1>
-  <div class="md:text-lg space-y-2">
-    <i class="fa-solid fa-trophy fa-3x text-yellow-300 mb-4"></i>
+<div class="animate fade-in-from-top space-y-5 text-center text-white md:w-[32rem]">
+  <h1 class="mb-4 text-2xl font-bold md:text-3xl">Congratulations!</h1>
+  <div class="space-y-2 md:text-lg">
+    <i class="fa-solid fa-trophy fa-3x mb-4 text-yellow-300"></i>
     <p>You've completed the quiz!</p>
     <p>Your score: {$quizStore.score} / {$quizStore.questions.length}</p>
   </div>

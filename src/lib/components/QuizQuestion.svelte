@@ -34,12 +34,12 @@
 </script>
 
 <div class="w-full">
-  <div class="flex items-center justify-center h-[5rem] sm:h-[4rem] lg:h-[3.5rem] px-4 mb-8 w-full">
+  <div class="mb-8 flex h-[5rem] w-full items-center justify-center px-4 sm:h-[4rem] lg:h-[3.5rem]">
     <!-- @html directive safely converts and renders HTML strings, including HTML entities.  -->
     <p class="text-center">{@html question}</p>
   </div>
 
-  <div class="grid gap-2 w-full">
+  <div class="grid w-full gap-2">
     {#each shuffledAnswers as answer (answer)}
       <button
         class={getAnswerButtonClasses(answer)}

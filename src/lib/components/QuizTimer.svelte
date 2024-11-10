@@ -10,7 +10,7 @@
   }
 </script>
 
-<div class="w-full h-3 bg-white rounded-full mb-6 overflow-hidden">
+<div class="mb-6 h-3 w-full overflow-hidden rounded-full bg-white">
   <div
     class="h-full {getProgressBarColor(progressPercentage)} origin-left"
     style="width: {progressPercentage}%; transition: width {currentTime === timeLimit

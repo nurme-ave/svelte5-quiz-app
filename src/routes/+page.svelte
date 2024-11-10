@@ -103,19 +103,19 @@
 
 <!-- Loading overlay -->
 {#if isLoading || isNavigating}
-  <div class="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/95">
     <div class="text-center">
-      <div class="text-2xl text-white mb-6">{loadingProgress}</div>
+      <div class="mb-6 text-2xl text-white">{loadingProgress}</div>
 
       {#if loadingProgress === 'Get Ready!'}
-        <div class="text-6xl font-bold text-yellow-300 animate-bounce">
+        <div class="animate-bounce text-6xl font-bold text-yellow-300">
           {countdown}
         </div>
       {:else}
         <div class="flex items-center justify-center gap-3">
           {#each [0, 0.2, 0.4] as delay, i}
             <div
-              class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+              class="h-2 w-2 animate-bounce rounded-full bg-yellow-300"
               style="animation-delay: {delay}s"
             ></div>
           {/each}
@@ -125,26 +125,26 @@
   </div>
 {/if}
 
-<div class="flex justify-between flex-col text-white opacity-95">
+<div class="flex flex-col justify-between text-white opacity-95">
   <div class="flex flex-col gap-2">
     <div class="animate fade-in-from-top delay-1">
-      <h1 class="text-4xl md:text-5xl font-semibold pb-3 uppercase balanced-text">
+      <h1 class="balanced-text pb-3 text-4xl font-semibold uppercase md:text-5xl">
         Welcome to the <span class="text-yellow-300">Quiz&nbsp;</span>App
       </h1>
-      <p class="md:text-xl balanced-text">Make your selections below and start the&nbsp;quiz.</p>
-      <div class="md:text-xl flex gap-2 items-center justify-center">
+      <p class="balanced-text md:text-xl">Make your selections below and start the&nbsp;quiz.</p>
+      <div class="flex items-center justify-center gap-2 md:text-xl">
         <p>Good luck!</p>
         <i
-          class="fas fa-star text-xl text-yellow-400 transition-transform hover:scale-110 animate-[bounce_2s_ease-in-out_infinite]"
+          class="fas fa-star animate-[bounce_2s_ease-in-out_infinite] text-xl text-yellow-400 transition-transform hover:scale-110"
         ></i>
       </div>
     </div>
 
-    <hr class="mt-7 border border-yellow-400 animate fade-in-from-top delay-2" />
+    <hr class="animate fade-in-from-top delay-2 mt-7 border border-yellow-400" />
 
-    <div class="flex flex-col gap-2 mt-7">
-      <h2 class="font-semibold uppercase animate fade-in-from-top delay-2">Select a category:</h2>
-      <div class="mb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+    <div class="mt-7 flex flex-col gap-2">
+      <h2 class="animate fade-in-from-top delay-2 font-semibold uppercase">Select a category:</h2>
+      <div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {#each QUIZ_CATEGORIES as category, i}
           <div class="animate stagger-fade-in {STAGGER_DELAY_CLASSES[i]}">
             <Button
@@ -161,7 +161,7 @@
 
       <div class="animate fade-in-from-top delay-2">
         <div class="mb-6">
-          <h2 class="font-semibold uppercase mb-2">Select difficulty:</h2>
+          <h2 class="mb-2 font-semibold uppercase">Select difficulty:</h2>
           <div class="space-x-2">
             {#each QUIZ_DIFFICULTIES as difficulty}
               <Button
@@ -176,7 +176,7 @@
         </div>
 
         <div>
-          <h2 class="font-semibold uppercase mb-2">Select number of questions:</h2>
+          <h2 class="mb-2 font-semibold uppercase">Select number of questions:</h2>
           <div class="space-x-2">
             {#each QUIZ_QUESTION_COUNTS as count}
               <Button
@@ -201,14 +201,14 @@
       </Button>
     </div>
   </div>
-  <div class="flex justify-center mb-2">
+  <div class="mb-2 flex justify-center">
     <footer class="mt-auto pt-7">
-      <p class="text-white text-sm text-center">
+      <p class="text-center text-sm text-white">
         &copy; {currentYear} |
         <a
           href="https://www.avenurme.dev"
           target="_blank"
-          class="underline underline-offset-4 decoration-blue-400 transition-colors duration-700 ease-in-out hover:text-blue-400"
+          class="underline decoration-blue-400 underline-offset-4 transition-colors duration-700 ease-in-out hover:text-blue-400"
           >Ave Nurme</a
         > | Built with SvelteKit
       </p>

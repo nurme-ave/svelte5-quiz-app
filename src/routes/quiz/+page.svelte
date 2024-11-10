@@ -190,12 +190,12 @@
   }
 </script>
 
-<div class="mx-auto text-white max-w-lg w-full">
-  <h1 class="text-2xl md:text-3xl font-bold mb-2 md:mb-4 text-yellow-300">
+<div class="mx-auto w-full max-w-lg text-white">
+  <h1 class="mb-2 text-2xl font-bold text-yellow-300 md:mb-4 md:text-3xl">
     {formatCategoryName($quizStore.selectedCategory)} Quiz
   </h1>
   {#if !quizState.quizEnded}
-    <div class="flex justify-end mb-4">
+    <div class="mb-4 flex justify-end">
       <MuteToggle />
     </div>
   {/if}
@@ -204,7 +204,7 @@
     <!-- Show nothing during initialization -->
   {:else if quizState.loadError}
     <div class="text-center">
-      <p class="text-red-500 mb-4">Failed to load questions. Please try again.</p>
+      <p class="mb-4 text-red-500">Failed to load questions. Please try again.</p>
       <Button
         onclick={restartQuiz}
         variant="primary"
@@ -218,7 +218,7 @@
       <QuizEndScreen onrestart={restartQuiz} />
     </div>
   {:else if $currentQuestion && $quizStore.questions.length > 0}
-    <div class="flex justify-between items-center mb-6 text-base">
+    <div class="mb-6 flex items-center justify-between text-base">
       <h2>
         Question: <span class="inline-flex w-12 justify-end"
           >{$quizStore.currentQuestionIndex + 1} / {$quizStore.questions.length}</span

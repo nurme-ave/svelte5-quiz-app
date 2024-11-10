@@ -46,12 +46,12 @@
 </svelte:head>
 
 {#if isInitialLoading}
-  <div class="fixed inset-0 bg-black flex items-center justify-center">
+  <div class="fixed inset-0 flex items-center justify-center bg-black">
     <div class="text-center">
       <div class="flex items-center justify-center gap-3">
         {#each [0, 0.2, 0.4] as delay}
           <div
-            class="w-2 h-2 bg-yellow-300 rounded-full animate-bounce"
+            class="h-2 w-2 animate-bounce rounded-full bg-yellow-300"
             style="animation-delay: {delay}s"
           ></div>
         {/each}
@@ -66,7 +66,7 @@
   style="background-image: url({backgroundImage});"
 >
   <main
-    class="flex flex-col justify-start text-center gap-3 pt-10 pb-0 px-7 lg:pt-14 2xl:pt-18 3xl:pt-24 md:max-w-3xl lg:max-w-5xl mx-auto"
+    class="2xl:pt-18 mx-auto flex flex-col justify-start gap-3 px-7 pb-0 pt-10 text-center md:max-w-3xl lg:max-w-5xl lg:pt-14 3xl:pt-24"
   >
     {@render children?.()}
   </main>

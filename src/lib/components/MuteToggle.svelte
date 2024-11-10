@@ -6,7 +6,7 @@
   Sound Effects:
   <button
     onclick={toggleMute}
-    class="flex items-center justify-center w-10 h-10 rounded-full bg-white/30 hover:bg-white/20 transition-colors duration-200"
+    class="flex h-10 w-10 items-center justify-center rounded-full bg-white/30 transition-colors duration-200 hover:bg-white/20"
     aria-label={$audioStore.isMuted ? 'Unmute sound' : 'Mute sound'}
   >
     {#if $audioStore.isMuted}
