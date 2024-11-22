@@ -12,7 +12,12 @@
 
   // Play sound effect
   onMount(async () => {
-    await playSoundEffect('quizendscreen');
+    try {
+      await playSoundEffect('quizendscreen');
+    } catch (error) {
+      console.error('Error playing end screen sound:', error);
+      // Component will still display normally even if sound fails
+    }
   });
 </script>
 
