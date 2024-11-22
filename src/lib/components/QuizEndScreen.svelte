@@ -1,12 +1,19 @@
 <script>
   // Quiz utilities and stores
-  import { quizStore, resetQuiz } from '$lib/stores/quizStore';
+  import { quizStore } from '$lib/stores/quizStore';
+  import { playSoundEffect } from '$lib/utils/soundUtils';
+  import { onMount } from 'svelte';
 
   // UI Component
   import Button from './Button.svelte';
 
   // Props
   const { onrestart = () => {} } = $props(); // Callback prop instead of event dispatch
+
+  // Play sound effect
+  onMount(async () => {
+    await playSoundEffect('quizendscreen');
+  });
 </script>
 
 <div class="animate fade-in-from-top space-y-5 text-center text-white md:w-[32rem]">

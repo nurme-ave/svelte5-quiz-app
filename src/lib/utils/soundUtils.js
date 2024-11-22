@@ -113,7 +113,7 @@ export async function playSoundEffect(type) {
 export async function preloadSounds() {
   try {
     // List of all sound effects we want to preload
-    const soundTypes = ['correct', 'incorrect'];
+    const soundTypes = ['correct', 'incorrect', 'quizendscreen'];
 
     // Load all sounds in parallel
     await Promise.all(soundTypes.map((type) => loadAudio(`/sounds/${type}`)));
