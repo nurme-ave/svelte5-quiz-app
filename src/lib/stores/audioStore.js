@@ -1,21 +1,26 @@
-// src/lib/stores/audioStore.js
 import { writable } from 'svelte/store';
 
-// Get initial mute state from localStorage if available
-const storedMute = localStorage.getItem('quizAppMuted');
-const initialMute = storedMute ? JSON.parse(storedMute) : false;
-
-// Create the store
+// Create the store with a default value
 const audioStore = writable({
-  isMuted: initialMute
+  isMuted: false
 });
+
+// Initialize the store with localStorage value if we're in the browser
+if (typeof window !== 'undefined') {
+  const storedMute = localStorage.getItem('quizAppMuted');
+  if (storedMute !== null) {
+    audioStore.set({ isMuted: JSON.parse(storedMute) });
+  }
+}
 
 // Create a convenience function to toggle mute
 export function toggleMute() {
   audioStore.update((state) => {
     const newState = { ...state, isMuted: !state.isMuted };
-    // Save to localStorage
-    localStorage.setItem('quizAppMuted', JSON.stringify(newState.isMuted));
+    // Only access localStorage in the browser
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('quizAppMuted', JSON.stringify(newState.isMuted));
+    }
     return newState;
   });
 }
