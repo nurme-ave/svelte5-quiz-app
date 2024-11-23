@@ -101,6 +101,18 @@
   });
 </script>
 
+<svelte:head>
+  <title>Quiz App - Test Your Knowledge in Movies, Music, Sports & More!</title>
+  <meta
+    name="description"
+    content="Challenge yourself with quizzes in Film, Music, Geography, Sports, History, and Vehicles! Choose your difficulty level, pick 5-15 questions, and test your knowledge. Perfect for both beginners and trivia experts!"
+  />
+  <meta
+    name="keywords"
+    content="quiz game, trivia questions, movie quiz, music trivia, geography quiz, sports trivia, history quiz, vehicle knowledge, easy quiz, medium difficulty, hard quiz, multiple choice, educational game, custom quiz length, movie trivia, automotive quiz, world geography, sports knowledge test, historical facts, quick quiz, extended quiz"
+  />
+</svelte:head>
+
 <!-- Loading overlay -->
 {#if isLoading || isNavigating}
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/95">
