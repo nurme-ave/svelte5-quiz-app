@@ -2,6 +2,8 @@
   import { quizStore } from '$lib/stores/quizStore';
   import { playSoundEffect } from '$lib/utils/soundUtils';
   import { currentQuestion } from '$lib/stores/quizStore';
+  import { fly } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
 
   let { question, shuffledAnswers = [], onAnswerSelect = () => {} } = $props();
 
@@ -33,7 +35,7 @@
   }
 </script>
 
-<div class="w-full">
+<div class="w-full" in:fly={{ y: -200, duration: 1000, opacity: 0, delay: 200, easing: quintOut }}>
   <div class="mb-8 flex h-[5rem] w-full items-center justify-center px-4 sm:h-[4rem] lg:h-[3.5rem]">
     <!-- @html directive safely converts and renders HTML strings, including HTML entities.  -->
     <p class="text-center">{@html question}</p>
