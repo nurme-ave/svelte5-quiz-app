@@ -190,7 +190,7 @@
   }
 </script>
 
-<div class="mx-auto w-full max-w-lg text-white">
+<div class="animate fade-in-from-top mx-auto w-full max-w-lg text-white">
   <h1 class="mb-2 text-2xl font-bold text-yellow-300 md:mb-4 md:text-3xl">
     {formatCategoryName($quizStore.selectedCategory)} Quiz
   </h1>
@@ -240,7 +240,7 @@
       onAnswerSelect={handleQuizAnswer}
     />
 
-    <div class="mt-8 flex flex-col gap-4">
+    <div class="animate fade-in-from-top mt-8 flex flex-col gap-4">
       <p>
         Score: <span class="inline-flex w-4 justify-end">{$quizStore.score}</span> /
         <span class="inline-flex {$quizStore.questions.length >= 10 ? 'w-4' : 'w-3'} justify-end">
