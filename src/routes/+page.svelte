@@ -164,9 +164,8 @@
               selected={$quizStore.selectedCategory === category.toLowerCase()}
               fullWidth
               customClass="transition-colors duration-[600ms] ease-in-out"
-            >
-              {category}
-            </Button>
+              text={category}
+            />
           </div>
         {/each}
       </div>
@@ -180,9 +179,8 @@
                 onclick={() => updateQuizState({ selectedDifficulty: difficulty.toLowerCase() })}
                 selected={$quizStore.selectedDifficulty === difficulty.toLowerCase()}
                 customClass="xsm:w-[6.25rem] xsm:px-3 sm:w-28 transition-colors duration-[600ms] ease-in-out"
-              >
-                {difficulty}
-              </Button>
+                text={difficulty}
+              />
             {/each}
           </div>
         </div>
@@ -195,9 +193,8 @@
                 onclick={() => updateQuizState({ selectedQuestionCount: count })}
                 selected={$quizStore.selectedQuestionCount === count}
                 customClass="w-16 transition-colors duration-[600ms] ease-in-out"
-              >
-                {count}
-              </Button>
+                text={count}
+              />
             {/each}
           </div>
         </div>
@@ -208,9 +205,8 @@
         disabled={!$canStartQuiz || isLoading}
         variant="primary"
         customClass="w-36 text-lg font-semibold mx-auto fade-in-from-top delay-3 my-7 transition-all duration-700 ease-in-out"
-      >
-        Start Quiz
-      </Button>
+        text="Start Quiz"
+      />
     </div>
   </div>
   <div class="mb-2 flex justify-center">

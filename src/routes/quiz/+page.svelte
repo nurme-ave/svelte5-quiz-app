@@ -209,9 +209,8 @@
         onclick={restartQuiz}
         variant="primary"
         customClass="w-32 bg-red-500 hover:bg-red-600 border-red-500"
-      >
-        Go Back
-      </Button>
+        text="Go Back"
+      />
     </div>
   {:else if quizState.quizEnded}
     <div class="space-y-4">
@@ -251,9 +250,8 @@
         onclick={restartQuiz}
         variant="primary"
         customClass="w-32 font-semibold bg-red-500 hover:bg-red-600 border-red-500 mx-auto my-4"
-      >
-        Restart
-      </Button>
+        text="Restart"
+      />
     </div>
   {/if}
 </div>

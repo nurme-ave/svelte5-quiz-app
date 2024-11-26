@@ -6,7 +6,7 @@
     variant = 'default',
     customClass = '',
     fullWidth = false,
-    children
+    text = ''
   } = $props();
 
   let classList = $derived(
@@ -40,5 +40,5 @@
 	- '{@render}' tells Svelte to render the result
 -->
 <button {onclick} {disabled} class={classList}>
-  {@render children?.()}
+  {text}
 </button>

@@ -28,7 +28,10 @@
     <p>You've completed the quiz!</p>
     <p>Your score: {$quizStore.score} / {$quizStore.questions.length}</p>
   </div>
-  <Button onclick={onrestart} variant="primary" customClass="w-44 text-lg font-semibold mx-auto">
-    Start New Quiz
-  </Button>
+  <Button
+    onclick={onrestart}
+    variant="primary"
+    customClass="w-44 text-lg font-semibold mx-auto"
+    text="Start New Quiz"
+  />
 </div>
