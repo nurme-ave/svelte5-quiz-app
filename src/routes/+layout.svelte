@@ -71,3 +71,10 @@
     {@render children?.()}
   </main>
 </div>
+
+<!-- 
+	In Svelte 4 we used '<slot />' instead of '{@render children?.()}'.
+	- 'children' is a slot function that contains the content passed to the Button component
+	- '?.()' (optional chaining operator) means "only call this function if it exists" (if there's no content, don't error out)
+	- '{@render}' tells Svelte to render the result
+-->
