@@ -18,10 +18,14 @@
 
   import { quizStore, updateQuizState, canStartQuiz } from '$lib/stores/quizStore';
 
-  let isLoading = $state(false);
-  let loadingProgress = $state('');
-  let countdown = $state(3);
+  let preGameState = $state({
+    isLoading: false,
+    loadingProgress: '',
+    countdown: 3
+  });
+
   let isNavigating = $state(false);
+
   let countdownTimer;
   const currentYear = new Date().getFullYear();
 
@@ -42,7 +46,7 @@
     }
 
     try {
-      isLoading = true;
+      preGameState.isLoading = true;
 
       const { path, loadingPromise } = await startQuiz(
         $quizStore.selectedCategory,
@@ -50,18 +54,18 @@
         $quizStore.selectedQuestionCount
       );
 
-      loadingProgress = 'Preparing quiz...';
+      preGameState.loadingProgress = 'Preparing quiz...';
       await loadingPromise;
 
-      loadingProgress = 'Get Ready!';
+      preGameState.loadingProgress = 'Get Ready!';
 
       // Countdown using a controlled timer
       await new Promise((resolve) => {
-        let remaining = countdown;
+        let remaining = preGameState.countdown;
         countdownTimer = setInterval(() => {
           if (remaining > 0) {
             remaining--;
-            countdown = remaining;
+            preGameState.countdown = remaining;
           } else {
             clearInterval(countdownTimer);
             resolve();
@@ -83,10 +87,11 @@
       if (countdownTimer) {
         clearInterval(countdownTimer);
       }
-      isLoading = false;
-      loadingProgress = '';
-      countdown = 3;
-      // isNavigating stays true during navigation
+      preGameState = {
+        isLoading: false,
+        loadingProgress: '',
+        countdown: 3
+      };
     }
   }
 
@@ -114,14 +119,14 @@
 </svelte:head>
 
 <!-- Loading overlay -->
-{#if isLoading || isNavigating}
+{#if preGameState.isLoading || isNavigating}
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/95">
     <div class="text-center">
-      <div class="mb-6 text-2xl text-white">{loadingProgress}</div>
+      <div class="mb-6 text-2xl text-white">{preGameState.loadingProgress}</div>
 
-      {#if loadingProgress === 'Get Ready!'}
+      {#if preGameState.loadingProgress === 'Get Ready!'}
         <div class="animate-bounce text-6xl font-bold text-yellow-300">
-          {countdown}
+          {preGameState.countdown}
         </div>
       {:else}
         <div class="flex items-center justify-center gap-3">
@@ -202,7 +207,7 @@
 
       <Button
         onclick={handleStartQuiz}
-        disabled={!$canStartQuiz || isLoading}
+        disabled={!$canStartQuiz || preGameState.isLoading}
         variant="primary"
         customClass="w-36 text-lg font-semibold mx-auto fade-in-from-top delay-3 my-7 transition-all duration-700 ease-in-out"
         text="Start Quiz"

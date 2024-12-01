@@ -93,9 +93,6 @@ export function resetQuiz() {
   });
 }
 
-// Helper functions
-// export const quizCategory = selectedCategory;
-
 export function getQuizBackgroundImage(category) {
   return BACKGROUND_IMAGES[category] || BACKGROUND_IMAGES.default;
 }
