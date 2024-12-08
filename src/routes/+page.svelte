@@ -216,13 +216,13 @@
   </div>
   <div class="mb-2 flex justify-center">
     <footer class="mt-auto pt-7">
-      <p class="text-center text-sm text-white">
+      <p class="text-center text-sm text-slate-200">
         &copy; {currentYear} |
         <a
           href="https://www.avenurme.dev"
           target="_blank"
-          class="underline decoration-blue-400 underline-offset-4 transition-colors duration-700 ease-in-out hover:text-blue-400"
-          >Ave Nurme</a
+          class="transition-colors duration-700 ease-in-out hover:text-blue-400"
+          >Ave Nurme<i class="fa-solid fa-arrow-up-right-from-square fa-xs ml-1"></i></a
         > | Built with SvelteKit
       </p>
     </footer>

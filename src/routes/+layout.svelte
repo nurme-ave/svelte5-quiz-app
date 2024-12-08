@@ -11,7 +11,7 @@
   let isInitialLoading = $state(true);
   let backgroundLoaded = $state(false);
 
-  const LANDING_BG = '/images/bkg_main.jpg';
+  const LANDING_BG = '/images/bkg_winter.jpg';
 
   // Combine default metadata with page-specific metadata, falling back to defaults if none provided
   const meta = $derived({
