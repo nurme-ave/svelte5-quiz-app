@@ -5,6 +5,7 @@
 
   // UI Component
   import Button from '$lib/components/Button.svelte';
+  import Footer from '$lib/components/Footer.svelte';
 
   // Quiz-specific constants, utilities and stores
   import {
@@ -27,7 +28,6 @@
   let isNavigating = $state(false);
 
   let countdownTimer;
-  const currentYear = new Date().getFullYear();
 
   export function load() {
     return {
@@ -214,17 +214,5 @@
       />
     </div>
   </div>
-  <div class="mb-2 flex justify-center">
-    <footer class="mt-auto pt-7">
-      <p class="text-center text-sm text-slate-200">
-        &copy; {currentYear} |
-        <a
-          href="https://www.avenurme.dev"
-          target="_blank"
-          class="transition-colors duration-700 ease-in-out hover:text-blue-400"
-          >Ave Nurme<i class="fa-solid fa-arrow-up-right-from-square fa-xs ml-1"></i></a
-        > | Built with SvelteKit
-      </p>
-    </footer>
-  </div>
+  <Footer />
 </div>
