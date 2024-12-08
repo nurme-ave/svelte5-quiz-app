@@ -19,7 +19,7 @@ export const BACKGROUND_IMAGES = {
   geography: '/images/bkg_geography.jpg',
   history: '/images/bkg_history.jpg',
   vehicles: '/images/bkg_vehicles.jpg',
-  default: '/images/bkg_main.jpg'
+  default: '/images/bkg_winter.jpg'
 };
 
 export const CATEGORY_MAPPING = {
